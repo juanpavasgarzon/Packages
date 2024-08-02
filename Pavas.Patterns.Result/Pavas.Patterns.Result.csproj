@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <Company>Pavas</Company>
+        <Product>Pavas Patterns</Product>
+        <Authors>Pavas</Authors>
+        <PackageId>Pavas.Patterns.Result</PackageId>
+        <Description>Implements the Result design pattern to handle success or error outcomes.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="."/>
+    </ItemGroup>
+
+</Project>
