@@ -5,7 +5,7 @@ namespace Pavas.Patterns.Cqrs.DependencyInjection;
 
 public static class Extensions
 {
-    public static void AddCommands(this ServiceCollection serviceCollection)
+    public static void AddCommands(this IServiceCollection serviceCollection)
     {
         var commands = new List<Assignable>();
         commands.AddRange(HandlerExtractor.Get(typeof(ICommandHandler<>)));
@@ -17,7 +17,7 @@ public static class Extensions
         commands.ForEach(command => serviceCollection.AddScoped(command.Interface!, command.Type));
     }
 
-    public static void AddQueries(this ServiceCollection serviceCollection)
+    public static void AddQueries(this IServiceCollection serviceCollection)
     {
         var queries = new List<Assignable>();
         queries.AddRange(HandlerExtractor.Get(typeof(IQueryHandler<>)));
