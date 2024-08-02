@@ -4,6 +4,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Result", "Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Cqrs", "Pavas.Patterns.Cqrs\Pavas.Patterns.Cqrs.csproj", "{D99C1762-B6D8-417A-8747-154B649671B1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pavas.Patterns.Example", "Pavas.Patterns.Example", "{7F71F710-36DA-4341-95DA-15B26F4D5FA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Example.Domain", "Pavas.Patterns.Example.Domain\Pavas.Patterns.Example.Domain.csproj", "{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Example.Application", "Pavas.Patterns.Example.Application\Pavas.Patterns.Example.Application.csproj", "{4B8D0088-C174-470E-A765-3065F2455D20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Example.Infrastructure", "Pavas.Patterns.Example.Infrastructure\Pavas.Patterns.Example.Infrastructure.csproj", "{D4A83219-D6CA-4BDF-8F74-5457CF0129BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Example.Api", "Pavas.Patterns.Example.Api\Pavas.Patterns.Example.Api.csproj", "{8A488549-8326-4091-9A46-B1D8E2A404BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +28,27 @@ Global
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B8D0088-C174-470E-A765-3065F2455D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B8D0088-C174-470E-A765-3065F2455D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B8D0088-C174-470E-A765-3065F2455D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B8D0088-C174-470E-A765-3065F2455D20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4A83219-D6CA-4BDF-8F74-5457CF0129BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4A83219-D6CA-4BDF-8F74-5457CF0129BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4A83219-D6CA-4BDF-8F74-5457CF0129BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4A83219-D6CA-4BDF-8F74-5457CF0129BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A488549-8326-4091-9A46-B1D8E2A404BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A488549-8326-4091-9A46-B1D8E2A404BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A488549-8326-4091-9A46-B1D8E2A404BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A488549-8326-4091-9A46-B1D8E2A404BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B5E8526E-1FDD-4376-AC5F-12DFD98A0FD3} = {7F71F710-36DA-4341-95DA-15B26F4D5FA7}
+		{4B8D0088-C174-470E-A765-3065F2455D20} = {7F71F710-36DA-4341-95DA-15B26F4D5FA7}
+		{D4A83219-D6CA-4BDF-8F74-5457CF0129BC} = {7F71F710-36DA-4341-95DA-15B26F4D5FA7}
+		{8A488549-8326-4091-9A46-B1D8E2A404BF} = {7F71F710-36DA-4341-95DA-15B26F4D5FA7}
 	EndGlobalSection
 EndGlobal
