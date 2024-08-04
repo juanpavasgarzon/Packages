@@ -161,15 +161,8 @@ public class MyCommandHandler : ICommandHandler<SomeCommand, SomeResult>
 ## Dependency Injection
 
 ```csharp
-var serviceCollection = new ServiceCollection();
-
-// Register command handlers
-serviceCollection.AddCommands();
-
-// Register query handlers
-serviceCollection.AddQueries();
-
-var serviceProvider = serviceCollection.BuildServiceProvider();
+// Register
+serviceCollection.AddCqrs();
 ```
 
 ## Conclusion

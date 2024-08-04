@@ -11,7 +11,7 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
         var queryHandler = serviceProvider.GetService<IQueryHandlerAsync<TQuery, TValue>>();
         if (queryHandler is null)
         {
-            const string serviceName = nameof(IQueryHandlerAsync<TQuery, TValue>);
+            var serviceName = typeof(IQueryHandlerAsync<TQuery, TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -24,7 +24,7 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
         var queryHandler = serviceProvider.GetService<IQueryHandlerAsync<TValue>>();
         if (queryHandler is null)
         {
-            const string serviceName = nameof(IQueryHandlerAsync<TValue>);
+            var serviceName = typeof(IQueryHandlerAsync<TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -37,7 +37,7 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
         var queryHandler = serviceProvider.GetService<IQueryHandler<TQuery, TValue>>();
         if (queryHandler is null)
         {
-            const string serviceName = nameof(IQueryHandler<TQuery, TValue>);
+            var serviceName = typeof(IQueryHandler<TQuery, TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -50,7 +50,7 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
         var queryHandler = serviceProvider.GetService<IQueryHandler<TValue>>();
         if (queryHandler is null)
         {
-            const string serviceName = nameof(IQueryHandler<TValue>);
+            var serviceName = typeof(IQueryHandler<TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 

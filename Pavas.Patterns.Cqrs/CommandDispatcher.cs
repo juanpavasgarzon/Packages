@@ -11,7 +11,7 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
         var commandHandler = serviceProvider.GetService<ICommandHandlerAsync<TCommand, TValue>>();
         if (commandHandler is null)
         {
-            const string serviceName = nameof(ICommandHandlerAsync<TCommand, TValue>);
+            var serviceName = typeof(ICommandHandlerAsync<TCommand, TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -24,7 +24,7 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
         var commandHandler = serviceProvider.GetService<ICommandHandlerAsync<TCommand>>();
         if (commandHandler is null)
         {
-            const string serviceName = nameof(ICommandHandlerAsync<TCommand>);
+            var serviceName = typeof(ICommandHandlerAsync<TCommand>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -36,7 +36,7 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
         var commandHandler = serviceProvider.GetService<ICommandHandler<TCommand, TValue>>();
         if (commandHandler is null)
         {
-            const string serviceName = nameof(ICommandHandler<TCommand, TValue>);
+            var serviceName = typeof(ICommandHandler<TCommand, TValue>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
@@ -49,7 +49,7 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
         var commandHandler = serviceProvider.GetService<ICommandHandler<TCommand>>();
         if (commandHandler is null)
         {
-            const string serviceName = nameof(ICommandHandler<TCommand>);
+            var serviceName = typeof(ICommandHandler<TCommand>).FullName;
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
