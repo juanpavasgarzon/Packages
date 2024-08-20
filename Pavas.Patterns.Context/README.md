@@ -39,10 +39,12 @@ public class MyContext
 
 In your Startup.cs or wherever you configure your services, register the context using the provided extension method.
 
+Use "ServiceLifetime" enum for assign the injection type.  
+
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddContext<MyContext>();
+    services.AddContext<MyContext>(ServiceLifetime.Scoped);
 }
 ```
 
