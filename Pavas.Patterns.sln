@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Result", "Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Cqrs", "Pavas.Patterns.Cqrs\Pavas.Patterns.Cqrs.csproj", "{D99C1762-B6D8-417A-8747-154B649671B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.Context", "Pavas.Patterns.Context\Pavas.Patterns.Context.csproj", "{00CFE8CA-0072-4C34-BC83-7AE5B12ECEAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99C1762-B6D8-417A-8747-154B649671B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00CFE8CA-0072-4C34-BC83-7AE5B12ECEAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00CFE8CA-0072-4C34-BC83-7AE5B12ECEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00CFE8CA-0072-4C34-BC83-7AE5B12ECEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00CFE8CA-0072-4C34-BC83-7AE5B12ECEAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

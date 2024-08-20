@@ -6,15 +6,15 @@
         <Copyright>© 2024 Pavas.</Copyright>
         <Product>Pavas Patterns</Product>
         <Authors>Pavas</Authors>
-        <PackageId>Pavas.Patterns.Cqrs</PackageId>
+        <PackageId>Pavas.Patterns.Context</PackageId>
         <PackageIcon>Assets/pavas-icon.png</PackageIcon>
-        <PackageTags>Patterns;Cqrs;Command;Query;Dispatch;Handler</PackageTags>
-        <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Cqrs</PackageProjectUrl>
+        <PackageTags>Patterns;Context;Provider;Accessor;Factory</PackageTags>
+        <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Context</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Cqrs</RepositoryUrl>
+        <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Context</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <Description>Implements the Sqrs desing for the clear separation of command and query operations, enhancing the maintainability and scalability of your applications.</Description>
+        <Description>Implements the Contexts desing simplifying the creation, management, and access to contexts in applications using dependency injection.</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
