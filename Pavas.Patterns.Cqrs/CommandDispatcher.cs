@@ -6,7 +6,10 @@ namespace Pavas.Patterns.Cqrs;
 
 public sealed class CommandDispatcher(IServiceProvider serviceProvider) : ICommandDispatcher
 {
-    public async Task<TValue> DispatchAsync<TCommand, TValue>(TCommand command)
+    public async Task<TValue> DispatchAsync<TCommand, TValue>(
+        TCommand command,
+        CancellationToken cancellationToken = new()
+    )
     {
         var commandHandler = serviceProvider.GetService<ICommandHandlerAsync<TCommand, TValue>>();
         if (commandHandler is null)
@@ -15,11 +18,11 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
-        var result = await commandHandler.HandleAsync(command);
+        var result = await commandHandler.HandleAsync(command, cancellationToken);
         return result;
     }
 
-    public async Task DispatchAsync<TCommand>(TCommand command)
+    public async Task DispatchAsync<TCommand>(TCommand command, CancellationToken cancellationToken = new())
     {
         var commandHandler = serviceProvider.GetService<ICommandHandlerAsync<TCommand>>();
         if (commandHandler is null)
@@ -28,7 +31,7 @@ public sealed class CommandDispatcher(IServiceProvider serviceProvider) : IComma
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
-        await commandHandler.HandleAsync(command);
+        await commandHandler.HandleAsync(command, cancellationToken);
     }
 
     public TValue Dispatch<TCommand, TValue>(TCommand command)

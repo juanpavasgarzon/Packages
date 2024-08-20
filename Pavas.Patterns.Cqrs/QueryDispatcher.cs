@@ -6,7 +6,7 @@ namespace Pavas.Patterns.Cqrs;
 
 public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDispatcher
 {
-    public async Task<TValue> DispatchAsync<TQuery, TValue>(TQuery query)
+    public async Task<TValue> DispatchAsync<TQuery, TValue>(TQuery query, CancellationToken cancellationToken = new())
     {
         var queryHandler = serviceProvider.GetService<IQueryHandlerAsync<TQuery, TValue>>();
         if (queryHandler is null)
@@ -15,11 +15,11 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
-        var result = await queryHandler.HandleAsync(query);
+        var result = await queryHandler.HandleAsync(query, cancellationToken);
         return result;
     }
 
-    public async Task<TValue> DispatchAsync<TValue>()
+    public async Task<TValue> DispatchAsync<TValue>(CancellationToken cancellationToken = new())
     {
         var queryHandler = serviceProvider.GetService<IQueryHandlerAsync<TValue>>();
         if (queryHandler is null)
@@ -28,7 +28,7 @@ public sealed class QueryDispatcher(IServiceProvider serviceProvider) : IQueryDi
             throw new NotFoundException($"Service {serviceName} Not Found");
         }
 
-        var result = await queryHandler.HandleAsync();
+        var result = await queryHandler.HandleAsync(cancellationToken);
         return result;
     }
 
