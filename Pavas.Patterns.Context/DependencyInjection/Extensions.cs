@@ -5,9 +5,15 @@ namespace Pavas.Patterns.Context.DependencyInjection;
 
 public static class Extensions
 {
-    public static void AddContext<TContext>(this IServiceCollection serviceCollection) where TContext : class
+    public static void AddContext<TContext>(
+        this IServiceCollection serviceCollection,
+        ServiceLifetime serviceLifetime
+    ) where TContext : class
     {
-        serviceCollection.AddTransient<IContextFactory<TContext>, ContextFactory<TContext>>();
-        serviceCollection.AddScoped<IContextProvider<TContext>, ContextProvider<TContext>>();
+        var factoryDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
+        serviceCollection.Add(factoryDescriptor);
+
+        var providerDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
+        serviceCollection.Add(providerDescriptor);
     }
 }
