@@ -17,8 +17,8 @@ separation leads to a more maintainable and scalable architecture.
 ```csharp
 public interface ICommandDispatcher
 {
-    Task<TValue> DispatchCommandAsync<TCommand, TValue>(TCommand command);
-    Task DispatchCommandAsync<TCommand>(TCommand command);
+    Task<TValue> DispatchCommandAsync<TCommand, TValue>(TCommand command, CancelationToken cancelationToken = new());
+    Task DispatchCommandAsync<TCommand>(TCommand command, CancelationToken cancelationToken = new());
     TValue DispatchCommand<TCommand, TValue>(TCommand command);
     void DispatchCommand<TCommand>(TCommand command);
 }
@@ -53,8 +53,8 @@ public interface ICommandHandlerAsync<in TCommand, TResult>
 ```csharp
 public interface IQueryDispatcher
 {
-    Task<TValue> DispatchQueryAsync<TQuery, TValue>(TQuery query);
-    Task<TValue> DispatchQueryAsync<TValue>();
+    Task<TValue> DispatchQueryAsync<TQuery, TValue>(TQuery query, CancelationToken cancelationToken = new());
+    Task<TValue> DispatchQueryAsync<TValue>(CancelationToken cancelationToken = new());
     TValue DispatchQuery<TQuery, TValue>(TQuery query);
     TValue DispatchQuery<TValue>();
 }
@@ -88,10 +88,10 @@ public interface IQueryHandlerAsync<in TQuery, TResult>
 var queryDispatcher = serviceProvider.GetService<IQueryDispatcher>();
 
 // Example async with query parameters 
-var resultWithParams = await queryDispatcher.DispatchAsync<SomeQuery, SomeResult>(new SomeQuery());
+var resultWithParams = await queryDispatcher.DispatchAsync<SomeQuery, SomeResult>(new SomeQuery(), new CancelationToken());
 
 // Example async without query parameters 
-var resultWithoutParams = await queryDispatcher.DispatchAsync<SomeResult>()
+var resultWithoutParams = await queryDispatcher.DispatchAsync<SomeResult>(new CancelationToken())
     
 // Example with query parameters
 var resultWithParams = queryDispatcher.Dispatch<SomeQuery, SomeResult>(new SomeQuery());
@@ -106,10 +106,10 @@ var resultWithoutParams = queryDispatcher.Dispatch<SomeResult>()
 var commandDispatcher = serviceProvider.GetService<ICommandDispatcher>();
 
 // Example async with command response 
-var resultWithParams = await commandDispatcher.DispatchAsync<SomeCommand, SomeResult>(new SomeCommand());
+var resultWithParams = await commandDispatcher.DispatchAsync<SomeCommand, SomeResult>(new SomeCommand(), new CancelationToken());
 
 // Example async without command response 
-await commandDispatcher.DispatchAsync<SomeCommand>(new SomeCommand())
+await commandDispatcher.DispatchAsync<SomeCommand>(new SomeCommand(), new CancelationToken())
     
 // Example with command response
 var resultWithParams = commandDispatcher.Dispatch<SomeCommand, SomeResult>(new SomeCommand());
