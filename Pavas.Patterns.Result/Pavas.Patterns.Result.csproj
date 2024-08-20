@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Company>Pavas</Company>
         <Copyright>© 2024 Pavas.</Copyright>
         <Product>Pavas Patterns</Product>
         <Authors>Pavas</Authors>
         <PackageId>Pavas.Patterns.Result</PackageId>
+        <PackageIcon>Assets/pavas-icon.png</PackageIcon>
         <PackageTags>Patterns;Result;Success;Failed;Error</PackageTags>
         <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Result</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Result</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Description>Implements the Result design pattern to handle success or error outcomes.</Description>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -22,6 +23,7 @@
 
     <ItemGroup>
         <None Update="README.md" Pack="true" PackagePath="."/>
+        <None Update="Assets/pavas-icon.png" Pack="true" PackagePath="."/>
     </ItemGroup>
 
 </Project>

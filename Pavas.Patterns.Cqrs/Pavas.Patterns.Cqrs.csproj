@@ -1,31 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.0.6</Version>
+        <Version>1.0.7</Version>
         <Company>Pavas</Company>
         <Copyright>© 2024 Pavas.</Copyright>
         <Product>Pavas Patterns</Product>
         <Authors>Pavas</Authors>
         <PackageId>Pavas.Patterns.Cqrs</PackageId>
+        <PackageIcon>Assets/pavas-icon.png</PackageIcon>
         <PackageTags>Patterns;Cqrs;Command;Query;Dispatch;Handler</PackageTags>
         <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Cqrs</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Cqrs</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Description>Implements the Result design pattern to handle success or error outcomes.</Description>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
-        <None Update="README.md" Pack="true" PackagePath="."/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
+        <None Update="README.md" Pack="true" PackagePath="."/>
+        <None Update="Assets/pavas-icon.png" Pack="true" PackagePath="."/>
     </ItemGroup>
 
 </Project>
