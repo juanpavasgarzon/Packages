@@ -1,4 +1,4 @@
-# Pavas.Patterns.Context
+# Context Design Pattern In .NET
 
 Pavas.Patterns.Context is a .NET library for managing context constructors and accessors (providers). It provides a
 flexible and extensible way to create, manage, and access contexts in your applications. This library is designed with

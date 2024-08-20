@@ -1,4 +1,4 @@
-# CQRS Design Pattern in .NET
+# CQRS Design Pattern In .NET
 
 ## Overview
 
