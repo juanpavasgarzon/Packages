@@ -1,7 +1,7 @@
-using Context.ContextCases;
+using Context.Example.ContextCases;
 using Pavas.Patterns.Context.Contracts;
 
-namespace Context;
+namespace Context.Example;
 
 public class ScopedContextMiddleware(IContextFactory<ScopedContext> scopedFactory) : IMiddleware
 {

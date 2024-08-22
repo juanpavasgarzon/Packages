@@ -1,10 +1,10 @@
-using Context.Constants;
-using Context.ContextCases;
+using Context.Example.Constants;
+using Context.Example.ContextCases;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Pavas.Patterns.Context.Contracts;
 
-namespace Context.Endpoints;
+namespace Context.Example.Endpoints;
 
 public static class ScopedRequestHandler
 {
@@ -24,7 +24,7 @@ public static class ScopedRequestHandler
     {
         try
         {
-            var context = contextProvider.Context ?? throw new NotFoundException("Context Not Found");
+            var context = contextProvider.Context ?? throw new NotFoundException("Context.Example Not Found");
             return TypedResults.Ok(context);
         }
         catch (Exception e)

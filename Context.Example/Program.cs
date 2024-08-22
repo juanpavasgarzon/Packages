@@ -1,6 +1,6 @@
-using Context;
-using Context.ContextCases;
-using Context.Endpoints;
+using Context.Example;
+using Context.Example.ContextCases;
+using Context.Example.Endpoints;
 using Pavas.Patterns.Context.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);

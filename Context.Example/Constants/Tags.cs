@@ -1,4 +1,4 @@
-namespace Context.Constants;
+namespace Context.Example.Constants;
 
 public static class Tags
 {

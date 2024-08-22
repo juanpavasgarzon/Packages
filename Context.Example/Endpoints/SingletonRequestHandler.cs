@@ -1,30 +1,30 @@
-using Context.Constants;
-using Context.ContextCases;
+using Context.Example.Constants;
+using Context.Example.ContextCases;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Pavas.Patterns.Context.Contracts;
 
-namespace Context.Endpoints;
+namespace Context.Example.Endpoints;
 
-public static class TransientRequestHandler
+public static class SingletonRequestHandler
 {
-    public static void MapTransientEndpoints(this IEndpointRouteBuilder app)
+    public static void MapSingletonEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup(Resources.Contexts);
 
-        group.MapGet(Resources.Transient, HandleTransient)
+        group.MapGet(Resources.Singleton, HandleSingleton)
             .WithTags(Tags.Contexts)
-            .Produces<TransientContext>(StatusCodes.Status200OK, "application/json")
+            .Produces<SingletonContext>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json");
     }
 
-    private static Results<Ok<TransientContext>, Conflict<ProblemDetails>> HandleTransient(
-        IContextProvider<TransientContext> contextProvider
+    private static Results<Ok<SingletonContext>, Conflict<ProblemDetails>> HandleSingleton(
+        IContextProvider<SingletonContext> contextProvider
     )
     {
         try
         {
-            var context = contextProvider.Context ?? throw new NotFoundException("Context Not Found");
+            var context = contextProvider.Context ?? throw new NotFoundException("Context.Example Not Found");
             return TypedResults.Ok(context);
         }
         catch (Exception e)
