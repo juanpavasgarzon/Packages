@@ -6,7 +6,7 @@ using Pavas.Patterns.Context.Contracts;
 
 namespace Context.Endpoints;
 
-public static class GetScopedRequestHandler
+public static class ScopedRequestHandler
 {
     public static void MapScopedEndpoints(this IEndpointRouteBuilder app)
     {

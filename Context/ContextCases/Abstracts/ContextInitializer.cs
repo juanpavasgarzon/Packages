@@ -1,6 +1,6 @@
-using Context.Cases.Contracts;
+using Context.ContextCases.Contracts;
 
-namespace Context.Cases.Abstracts;
+namespace Context.ContextCases.Abstracts;
 
 public abstract class ContextInitializer<TContext> where TContext : class, IContext
 {

@@ -6,7 +6,7 @@ using Pavas.Patterns.Context.Contracts;
 
 namespace Context.Endpoints;
 
-public static class GetSingletonRequestHandler
+public static class SingletonRequestHandler
 {
     public static void MapSingletonEndpoints(this IEndpointRouteBuilder app)
     {

@@ -1,44 +1,35 @@
+using Context;
+using Context.ContextCases;
+using Context.Endpoints;
+using Pavas.Patterns.Context.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
+
+var singletonContext = SingletonContext.Initialize();
+
+builder.Services.AddSingletonContext(singletonContext);
+builder.Services.AddScopedContext<ScopedContext>();
+builder.Services.AddTransientContext<TransientContext>();
+builder.Services.AddScoped<ScopedContextMiddleware>();
+builder.Services.AddScoped<TransientContextMiddleware>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.MapSingletonEndpoints();
+app.MapScopedEndpoints();
+app.MapTransientEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ScopedContextMiddleware>();
+app.UseMiddleware<TransientContextMiddleware>();
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

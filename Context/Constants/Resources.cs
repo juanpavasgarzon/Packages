@@ -1,4 +1,4 @@
-namespace Context;
+namespace Context.Constants;
 
 
 public static class Resources

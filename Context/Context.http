@@ -1,6 +1,19 @@
 @Context_HostAddress = http://localhost:5059
+@Context_Resource = contexts
 
-GET {{Context_HostAddress}}/weatherforecast/
-Accept: application/json
+###
+
+GET {{Context_HostAddress}}/{{Context_Resource}}/singleton
+accept: application/json
+
+###
+
+GET {{Context_HostAddress}}/{{Context_Resource}}/scoped
+accept: application/json
+
+###
+
+GET {{Context_HostAddress}}/{{Context_Resource}}/transient
+accept: application/json
 
 ###

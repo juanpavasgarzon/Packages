@@ -6,7 +6,7 @@ using Pavas.Patterns.Context.Contracts;
 
 namespace Context.Endpoints;
 
-public static class GetTransientRequestHandler
+public static class TransientRequestHandler
 {
     public static void MapTransientEndpoints(this IEndpointRouteBuilder app)
     {

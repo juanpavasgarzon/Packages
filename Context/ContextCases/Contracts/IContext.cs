@@ -1,4 +1,4 @@
-namespace Context.Cases.Contracts;
+namespace Context.ContextCases.Contracts;
 
 public interface IContext
 {

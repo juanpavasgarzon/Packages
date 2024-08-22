@@ -1,7 +1,7 @@
-using Context.Cases.Abstracts;
-using Context.Cases.Contracts;
+using Context.ContextCases.Abstracts;
+using Context.ContextCases.Contracts;
 
-namespace Context.Cases;
+namespace Context.ContextCases;
 
 public class TransientContext : ContextInitializer<TransientContext>, IContext
 {
