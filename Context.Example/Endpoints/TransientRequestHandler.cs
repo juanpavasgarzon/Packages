@@ -1,5 +1,6 @@
 using Context.Example.Constants;
 using Context.Example.ContextCases;
+using Context.Example.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Pavas.Patterns.Context.Contracts;

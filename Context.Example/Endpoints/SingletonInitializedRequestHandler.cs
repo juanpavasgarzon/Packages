@@ -7,20 +7,20 @@ using Pavas.Patterns.Context.Contracts;
 
 namespace Context.Example.Endpoints;
 
-public static class SingletonRequestHandler
+public static class SingletonInitializedRequestHandler
 {
-    public static void MapSingletonEndpoints(this IEndpointRouteBuilder app)
+    public static void MapSingletonInitializedEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup(Resources.Contexts);
 
-        group.MapGet(Resources.Singleton, HandleSingleton)
+        group.MapGet(Resources.SingletonInitialized, HandleSingleton)
             .WithTags(Tags.Contexts)
-            .Produces<SingletonContext>(StatusCodes.Status200OK, "application/json")
+            .Produces<SingletonInitializedContext>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json");
     }
 
-    private static Results<Ok<SingletonContext>, Conflict<ProblemDetails>> HandleSingleton(
-        IContextProvider<SingletonContext> contextProvider
+    private static Results<Ok<SingletonInitializedContext>, Conflict<ProblemDetails>> HandleSingleton(
+        IContextProvider<SingletonInitializedContext> contextProvider
     )
     {
         try

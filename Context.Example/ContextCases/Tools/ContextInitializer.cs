@@ -1,10 +1,10 @@
 using Context.Example.ContextCases.Contracts;
 
-namespace Context.Example.ContextCases.Abstracts;
+namespace Context.Example.ContextCases.Tools;
 
-public abstract class ContextInitializer<TContext> where TContext : class, IContext
+public class ContextInitializer : IContextInitializer
 {
-    public static TContext Initialize()
+    public TContext Initialize<TContext>() where TContext : class, IContext
     {
         var context = Activator.CreateInstance<TContext>();
         context.Name = typeof(TContext).Name;

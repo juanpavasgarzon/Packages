@@ -1,6 +1,6 @@
 namespace Context.Example.ContextCases.Contracts;
 
-public class IContextInitializer
+public interface IContextInitializer
 {
-    
+    public TContext Initialize<TContext>() where TContext : class, IContext;
 }

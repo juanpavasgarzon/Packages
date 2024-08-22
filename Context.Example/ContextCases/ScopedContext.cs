@@ -1,9 +1,8 @@
-using Context.Example.ContextCases.Abstracts;
 using Context.Example.ContextCases.Contracts;
 
 namespace Context.Example.ContextCases;
 
-public class ScopedContext : ContextInitializer<ScopedContext>, IContext
+public class ScopedContext : IContext
 {
     public string TraceIdentifier { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

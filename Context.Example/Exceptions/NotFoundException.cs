@@ -1,3 +1,3 @@
-namespace Context.Example;
+namespace Context.Example.Exceptions;
 
 public class NotFoundException(string message) : Exception(message);
