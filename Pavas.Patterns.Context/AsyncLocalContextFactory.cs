@@ -2,7 +2,7 @@
 
 namespace Pavas.Patterns.Context;
 
-public sealed class ContextFactory<TContext>(
+internal sealed class AsyncLocalContextFactory<TContext>(
     IContextProvider<TContext> contextProvider
 ) : IContextFactory<TContext> where TContext : class
 {

@@ -3,14 +3,14 @@ using Pavas.Patterns.Context.Contracts;
 
 namespace Pavas.Patterns.Context.DependencyInjection;
 
-internal sealed class ContextHostedService<TContext>(
+public sealed class ContextHostedService<TContext>(
     IContextFactory<TContext> contextFactory,
-    TContext initialContext
+    TContext context
 ) : IHostedService where TContext : class
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        contextFactory.Construct(initialContext);
+        contextFactory.Construct(context);
         return Task.CompletedTask;
     }
 

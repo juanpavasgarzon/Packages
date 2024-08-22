@@ -1,23 +1,19 @@
-# Context Design Pattern In .NET
 
-Pavas.Patterns.Context is a .NET library for managing context constructors and accessors (providers). It provides a
-flexible and extensible way to create, manage, and access contexts in your applications. This library is designed with
-dependency injection in mind, making it easy to integrate into existing projects.
+# Pavas.Patterns.Context
+
+Pavas.Patterns.Context is a .NET library for managing context constructors and accessors (providers). It provides a flexible and extensible way to create, manage, and access contexts in your applications. This library is designed with dependency injection in mind, making it easy to integrate into existing projects.
 
 ## Installation
-
 To install this library, add the following NuGet package to your project:
 
-```sh
+```bash
 dotnet add package Pavas.Patterns.Context
 ```
 
 ## Usage
 
-### 1. Define context class
-
-Create a context class that will be managed by the context provider and factory. This class should contain any
-information relevant to the context you want to manage.
+### 1. Define Context Class
+Create a context class that will be managed by the context provider and factory. This class should contain any information relevant to the context you want to manage.
 
 ```csharp
 public class MyContext
@@ -35,16 +31,49 @@ public class MyContext
 }
 ```
 
-### 1. Register the Context in Dependency Injection
+### 2. Register the Context in Dependency Injection
 
-In your Startup.cs or wherever you configure your services, register the context using the provided extension method.
+In your `Startup.cs` or wherever you configure your services, register the context using the provided extension method.
 
-Use "ServiceLifetime" enum for assign the injection type.  
+Use the `ServiceLifetime` enum to assign the injection type.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddContext<MyContext>(ServiceLifetime.Scoped);
+}
+```
+
+If you need to initialize the context with custom logic, use the overloaded method that accepts an initializer:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddContext<MyContext>(ServiceLifetime.Scoped, () =>
+    {
+        // Custom initialization logic
+        var userId = "user-123";
+        var tenantId = "tenant-456";
+        var correlationId = "correlation-789";
+        return new MyContext(userId, tenantId, correlationId);
+    });
+}
+```
+
+If you need to initialize the context with custom logic and use the service provider, use the overloaded method that accepts an initializer:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddContext<MyContext>(ServiceLifetime.Scoped, serviceProvider =>
+    {
+        var someService = serviceProvider.GetRequiredService<SomeService>();
+        // Custom initialization logic
+        var userId = someService.GetSessionUserId();
+        var tenantId = someService.GetTenantId();
+        var correlationId = someService.CreateCorrelationId();
+        return new MyContext(userId, tenantId, correlationId);
+    });
 }
 ```
 
@@ -119,9 +148,9 @@ public class CleanupService
 
 The library is organized into several key components:
 
-- **`ContextProvider<TContext>`**: Manages the current instance of the context for the current execution context.
-- **`ContextFactory<TContext>`**: Provides methods to create (construct) and destroy (destruct) contexts.
-- **`Extensions`**: Contains methods for registering the context provider and factory with the dependency injection container.
+- `ContextProvider<TContext>`: Manages the current instance of the context for the current execution context.
+- `ContextFactory<TContext>`: Provides methods to create (construct) and destroy (destruct) contexts.
+- `Extensions`: Contains methods for registering the context provider and factory with the dependency injection container.
 
 ## Contributing
 

@@ -5,35 +5,77 @@ namespace Pavas.Patterns.Context.DependencyInjection;
 
 public static class Extensions
 {
-    public static void AddContext<TContext>(
-        this IServiceCollection serviceCollection,
+    private static void BaseAddContextLifetime<TContext>(
+        this IServiceCollection services,
         ServiceLifetime serviceLifetime
     ) where TContext : class
     {
-        var factoryDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
-        serviceCollection.Add(factoryDescriptor);
+        var factoryDescriptor = new ServiceDescriptor(
+            typeof(IContextFactory<TContext>),
+            typeof(AsyncLocalContextFactory<TContext>),
+            serviceLifetime
+        );
 
-        var providerDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
-        serviceCollection.Add(providerDescriptor);
+        services.Add(factoryDescriptor);
+
+        var providerDescriptor = new ServiceDescriptor(
+            typeof(IContextProvider<TContext>),
+            typeof(AsyncLocalContextProvider<TContext>),
+            serviceLifetime
+        );
+
+        services.Add(providerDescriptor);
     }
 
-    public static void AddContext<TContext>(
-        this IServiceCollection serviceCollection,
-        ServiceLifetime serviceLifetime,
+    private static void BaseAddGlobalContext<TContext>(
+        this IServiceCollection services,
+        TContext context
+    ) where TContext : class
+    {
+        services.AddSingleton(context);
+        services.AddSingleton<IContextProvider<TContext>, GlobalContextProvider<TContext>>(_ =>
+        {
+            var contextProvider = GlobalContextProvider<TContext>.GetInstance();
+            contextProvider.Context = context;
+            return contextProvider;
+        });
+    }
+
+    public static void AddScopedContext<TContext>(this IServiceCollection services) where TContext : class
+    {
+        services.BaseAddContextLifetime<TContext>(ServiceLifetime.Scoped);
+    }
+
+    public static void AddTransientContext<TContext>(this IServiceCollection services) where TContext : class
+    {
+        services.BaseAddContextLifetime<TContext>(ServiceLifetime.Transient);
+    }
+
+    public static void AddSingletonContext<TContext>(
+        this IServiceCollection services,
         Func<IServiceProvider, TContext> initializer
     ) where TContext : class
     {
-        var factoryDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
-        serviceCollection.Add(factoryDescriptor);
+        var serviceProviderFactory = new DefaultServiceProviderFactory();
+        var serviceProvider = serviceProviderFactory.CreateServiceProvider(services);
+        var context = initializer(serviceProvider);
+        services.BaseAddGlobalContext(context);
+    }
 
-        var providerDescriptor = new Descriptor<IContextFactory<TContext>, ContextFactory<TContext>>(serviceLifetime);
-        serviceCollection.Add(providerDescriptor);
+    public static void AddSingletonContext<TContext>(
+        this IServiceCollection services,
+        Func<TContext> initializer
+    ) where TContext : class
+    {
+        var context = initializer();
+        services.BaseAddGlobalContext(context);
+    }
 
-        serviceCollection.AddHostedService<ContextHostedService<TContext>>(services =>
-        {
-            var context = initializer.Invoke(services);
-            var factory = services.GetRequiredService<IContextFactory<TContext>>();
-            return new ContextHostedService<TContext>(factory, context);
-        });
+    public static void AddSingletonContext<TContext>(
+        this IServiceCollection services,
+        TContext context
+    ) where TContext : class
+    {
+        services.BaseAddGlobalContext(context);
     }
 }
