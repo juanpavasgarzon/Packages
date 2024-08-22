@@ -1,9 +1,11 @@
-
 # Pavas.Patterns.Context
 
-Pavas.Patterns.Context is a .NET library for managing context constructors and accessors (providers). It provides a flexible and extensible way to create, manage, and access contexts in your applications. This library is designed with dependency injection in mind, making it easy to integrate into existing projects.
+Pavas.Patterns.Context is a .NET library for managing context constructors and accessors (providers). It provides a
+flexible and extensible way to create, manage, and access contexts in your applications. This library is designed with
+dependency injection in mind, making it easy to integrate into existing projects.
 
 ## Installation
+
 To install this library, add the following NuGet package to your project:
 
 ```bash
@@ -13,7 +15,9 @@ dotnet add package Pavas.Patterns.Context
 ## Usage
 
 ### 1. Define Context Class
-Create a context class that will be managed by the context provider and factory. This class should contain any information relevant to the context you want to manage.
+
+Create a context class that will be managed by the context provider and factory. This class should contain any
+information relevant to the context you want to manage.
 
 ```csharp
 public class MyContext
@@ -37,49 +41,50 @@ In your `Startup.cs` or wherever you configure your services, register the conte
 
 Use the `ServiceLifetime` enum to assign the injection type.
 
+#### For Scoped Context:
+
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddContext<MyContext>(ServiceLifetime.Scoped);
+    services.AddScopedContext<MyContext>();
 }
 ```
 
-If you need to initialize the context with custom logic, use the overloaded method that accepts an initializer:
+#### For Transient Context:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddContext<MyContext>(ServiceLifetime.Scoped, () =>
-    {
-        // Custom initialization logic
-        var userId = "user-123";
-        var tenantId = "tenant-456";
-        var correlationId = "correlation-789";
-        return new MyContext(userId, tenantId, correlationId);
-    });
+    services.AddTransientContext<MyContext>();
 }
 ```
 
-If you need to initialize the context with custom logic and use the service provider, use the overloaded method that accepts an initializer:
+#### For Singleton Context:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddContext<MyContext>(ServiceLifetime.Scoped, serviceProvider =>
+    var myContext = new MyContext("user-123", "tenant-456", "correlation-789");
+    services.AddSingletonContext(myContext);
+}
+```
+
+Or with an initializer:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSingletonContext(provider =>
     {
-        var someService = serviceProvider.GetRequiredService<SomeService>();
-        // Custom initialization logic
-        var userId = someService.GetSessionUserId();
-        var tenantId = someService.GetTenantId();
-        var correlationId = someService.CreateCorrelationId();
-        return new MyContext(userId, tenantId, correlationId);
+        return new MyContext("user-123", "tenant-456", "correlation-789");
     });
 }
 ```
 
 ### 3. Create and Use Contexts
 
-Use the `IContextFactory<TContext>` to create (construct) and destroy (destruct) contexts within your application. The `IContextProvider<TContext>` will allow you to access the current context.
+Use the `IContextFactory<TContext>` to create (construct) and destroy (destruct) contexts within your application.
+The `IContextProvider<TContext>` will allow you to access the current context.
 
 #### Constructing a Context
 
@@ -116,11 +121,7 @@ public class AnotherService
     public void DoSomethingWithContext()
     {
         var context = _contextProvider.Context;
-        if (context != null)
-        {
-            // Use the context (e.g., log the UserId and TenantId)
-            Console.WriteLine($"UserId: {context.UserId}, TenantId: {context.TenantId}, CorrelationId: {context.TenantId}");
-        }
+        Console.WriteLine($"UserId: {context.UserId}, TenantId: {context.TenantId}, CorrelationId: {context.CorrelationId}");
     }
 }
 ```
@@ -148,9 +149,12 @@ public class CleanupService
 
 The library is organized into several key components:
 
-- `ContextProvider<TContext>`: Manages the current instance of the context for the current execution context.
+- `AsyncLocalContextProvider<TContext>`: Manages the current instance of the context for the current async execution
+  context.
+- `GlobalContextProvider<TContext>`: Manages a global or singleton instance of the context.
 - `ContextFactory<TContext>`: Provides methods to create (construct) and destroy (destruct) contexts.
-- `Extensions`: Contains methods for registering the context provider and factory with the dependency injection container.
+- `Extensions`: Contains methods for registering the context provider and factory with the dependency injection
+  container.
 
 ## Contributing
 

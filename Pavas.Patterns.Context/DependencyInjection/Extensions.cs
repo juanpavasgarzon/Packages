@@ -64,15 +64,6 @@ public static class Extensions
 
     public static void AddSingletonContext<TContext>(
         this IServiceCollection services,
-        Func<TContext> initializer
-    ) where TContext : class
-    {
-        var context = initializer();
-        services.BaseAddGlobalContext(context);
-    }
-
-    public static void AddSingletonContext<TContext>(
-        this IServiceCollection services,
         TContext context
     ) where TContext : class
     {

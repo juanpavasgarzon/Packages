@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <Company>Pavas</Company>
         <Copyright>© 2024 Pavas.</Copyright>
         <Product>Pavas Patterns</Product>
@@ -23,7 +23,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
