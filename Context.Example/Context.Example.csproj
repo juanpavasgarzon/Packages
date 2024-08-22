@@ -16,8 +16,4 @@
       <ProjectReference Include="..\Pavas.Patterns.Context\Pavas.Patterns.Context.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
 </Project>
