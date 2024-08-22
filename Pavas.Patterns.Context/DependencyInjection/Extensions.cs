@@ -31,7 +31,7 @@ public static class Extensions
 
         serviceCollection.AddHostedService<ContextHostedService<TContext>>(services =>
         {
-            var context = initializer(services);
+            var context = initializer.Invoke(services);
             var factory = services.GetRequiredService<IContextFactory<TContext>>();
             return new ContextHostedService<TContext>(factory, context);
         });
