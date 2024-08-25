@@ -11,7 +11,7 @@ public static class ErrorFactory
             Code = statusCode.ToString(),
             Name = name,
             Description = description,
-            Extensions = { ["Status"] = statusCode }
+            Extensions = { ["Status"] = (int)statusCode }
         };
     }
 
@@ -22,6 +22,16 @@ public static class ErrorFactory
             Code = code,
             Name = name,
             Description = description
+        };
+    }
+
+    public static Error FromException(Exception exception)
+    {
+        return new Error
+        {
+            Code = exception.GetType().Name,
+            Name = exception.TargetSite?.Name ?? exception.GetType().Name,
+            Description = exception.Message
         };
     }
 }
