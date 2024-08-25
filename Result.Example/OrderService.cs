@@ -1,22 +1,11 @@
-using Pavas.Patterns.Result;
-using Pavas.Patterns.Result.Errors;
-
 namespace Result.Example;
 
-public class StockService(List<Stock> stocks)
+public class OrderService(Order order)
 {
-    public Result<List<Stock>> ValidateStock(List<Stock> stocks)
+    public Order Order { get; private init; } = order;
+
+    public Pavas.Patterns.Result.Result<string> SendNotification()
     {
-        var invalidStock = stocks.Find(stock =>
-        {
-            var existingStock = stocks.Find(element => element.Name == stock.Name);
-            return existingStock == null || existingStock.Quantity < stock.Quantity;
-        });
-
-        if (invalidStock == null)
-            return Result<List<Stock>>.Success(stocks);
-
-        var error = ErrorFactory.CreateSystemError("Invalid", "Invalid", "Stocks are invalid");
-        return Result<List<Stock>>.Failure(error);
+        return Pavas.Patterns.Result.Result<string>.Success($"Order {Order.Consecutive} Is Success");
     }
 }

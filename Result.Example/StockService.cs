@@ -1,25 +1,37 @@
 using Pavas.Patterns.Result;
+using Pavas.Patterns.Result.Errors;
 
-public class StockService
+namespace Result.Example;
+
+public class StockService(List<Stock> stocks)
 {
-    private readonly List<Stock> _stocks =
-    [
-        new Stock
-        {
-            Name = "Computer",
-            Quantity = 10,
-            Price = 199
-        },
-        new Stock
-        {
-            Name = "Cellphone",
-            Quantity = 10,
-            Price = 199
-        }
-    ];
+    public List<Stock> Stocks { get; private init; } = stocks;
 
-    public Result<Stock> ValidateStock(List<Stock> stocks)
+    public Result<List<Stock>> ValidateStock(List<Stock> stocks)
     {
-        var outStocks = _stocks.AsQueryable().
+        var invalidStock = stocks.Find(stock =>
+        {
+            var existingStock = Stocks.Find(element => element.Name == stock.Name);
+            return existingStock == null || existingStock.Quantity < stock.Quantity;
+        });
+
+        if (invalidStock == null)
+            return Result<List<Stock>>.Success(stocks);
+
+        var error = ErrorFactory.CreateSystemError("Invalid", "Invalid", "Stocks are invalid");
+        return Result<List<Stock>>.Failure(error);
+    }
+
+    public Result<List<Stock>> UpdateStock(List<Stock> stocks)
+    {
+        foreach (var stock in stocks)
+        {
+            var existingStock = Stocks.Find(element => element.Name == stock.Name);
+            existingStock!.Quantity -= stock.Quantity;
+        }
+
+        throw new Exception("asasdsafd");
+
+        return Result<List<Stock>>.Success(stocks);
     }
 }
