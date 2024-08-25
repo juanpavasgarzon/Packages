@@ -4,16 +4,16 @@
 ###
 
 GET {{Context_HostAddress}}/{{Context_Resource}}/singleton
-accept: application/json
+Accept: application/json
 
 ###
 
 GET {{Context_HostAddress}}/{{Context_Resource}}/scoped
-accept: application/json
+Accept: application/json
 
 ###
 
 GET {{Context_HostAddress}}/{{Context_Resource}}/transient
-accept: application/json
+Accept: application/json
 
 ###
