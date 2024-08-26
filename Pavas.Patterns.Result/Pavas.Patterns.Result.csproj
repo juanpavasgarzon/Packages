@@ -8,7 +8,7 @@
         <Authors>Pavas</Authors>
         <PackageId>Pavas.Patterns.Result</PackageId>
         <PackageIcon>Assets/pavas-icon.png</PackageIcon>
-        <PackageTags>Patterns;Result;Success;Failed;Error</PackageTags>
+        <PackageTags>Patterns;Result;Success;Failed;Error;ROP;Railway;</PackageTags>
         <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Result</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -30,7 +30,7 @@ public class StockService(List<Stock> stocks)
             existingStock!.Quantity -= stock.Quantity;
         }
 
-        throw new Exception("asasdsafd");
+        throw new Exception("Example exception");
 
         return Result<List<Stock>>.Success(stocks);
     }

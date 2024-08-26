@@ -60,10 +60,11 @@ if (app.Environment.IsDevelopment())
 var serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(builder.Services);
 var orderService = serviceProvider.GetRequiredService<OrderService>();
 var stockService = serviceProvider.GetRequiredService<StockService>();
+var order = serviceProvider.GetRequiredService<Order>();
 
-var result = Result<Order>.Success(orderService.Order)
-    .Bind(order => stockService.ValidateStock(order.Items))
-    .TryCatch(stocks => stockService.UpdateStock(stocks), ErrorFactory.FromException)
+var result = Pavas.Patterns.Result.Result.Success()
+    .Bind(() => stockService.ValidateStock(order.Items))
+    .TryCatch(_ => stockService.UpdateStock(order.Items), ErrorFactory.FromException)
     .Bind(_ => orderService.SendNotification())
     .ThenSuccess(Console.WriteLine)
     .ThenFailure(error => Console.WriteLine(error.ToString()))
