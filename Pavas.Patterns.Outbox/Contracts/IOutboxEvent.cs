@@ -2,7 +2,7 @@
 
 public interface IOutboxEvent
 {
-    public int Id { get; init; }
+    public int Id { get; set; }
     public string EventType { get; set; }
     public string Payload { get; set; }
     public string Status { get; set; }

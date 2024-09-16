@@ -5,6 +5,11 @@ namespace Pavas.Patterns.Outbox;
 
 public static class OutBoxEventExtensions
 {
+    public static TValue Cast<TValue>(this IOutboxEvent outboxEvent) where TValue : class, IOutboxEvent
+    {
+        return (TValue)outboxEvent;
+    }
+
     public static void EventType(this IOutboxEvent outboxEvent, string eventType)
     {
         outboxEvent.EventType = eventType;
@@ -21,7 +26,7 @@ public static class OutBoxEventExtensions
         outboxEvent.CreatedAt = DateTime.UtcNow;
     }
 
-    public static void MarkAsSent(this IOutboxEvent outboxEvent)
+    public static void MarkAsPublished(this IOutboxEvent outboxEvent)
     {
         outboxEvent.Status = OutboxEventStates.Published;
         outboxEvent.PublishedAt = DateTime.UtcNow;
