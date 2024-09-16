@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <Company>Pavas</Company>
+        <Copyright>© 2024 Pavas.</Copyright>
+        <Product>Pavas Patterns</Product>
+        <Authors>Pavas</Authors>
+        <PackageId>Pavas.Patterns.Outbox</PackageId>
+        <PackageIcon>Assets/pavas-icon.png</PackageIcon>
+        <PackageTags>Outbox;Patterns;Event;Messaging;Integration</PackageTags>
+        <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Outbox</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.Outbox</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Description>Implements the Outbox pattern to manage event-driven systems with reliable state transitions and event publishing through dependency injection.</Description>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="."/>
+        <None Update="Assets/pavas-icon.png" Pack="true" PackagePath="."/>
+    </ItemGroup>
+
+</Project>
