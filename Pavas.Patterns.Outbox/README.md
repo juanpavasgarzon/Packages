@@ -1,15 +1,15 @@
 
 # Pavas.Patterns.Outbox
 
-The `Pavas.Patterns.Outbox` NuGet package provides an interface and utility extensions for handling outbox pattern events. This package simplifies the process of handling event-driven systems by managing the state of events and their payloads through extensions, including marking events as pending, sent, or failed.
+The `Pavas.Patterns.Outbox` NuGet package provides an interface and utility extensions for handling outbox pattern events and managing their state in a database. It simplifies the process of handling event-driven systems by managing the state of events and their payloads through extensions, including marking events as pending, sent, or failed.
 
 ## Features
 
-- Define an outbox event using the `IOutboxEvent` interface.
+- Define outbox events using the `IOutboxEvent` interface.
 - Serialize and handle event payloads via extension methods.
 - Track event states (`Pending`, `Published`, `Fail`) using a simple, intuitive API.
-- Utilities to mark events as `Pending`, `Sent`, or `Fail`.
-- Custom repository interface for managing event state in a database.
+- Repository interface to manage the outbox pattern with database integration.
+- Utilities to mark events as `Pending`, `Published`, or `Fail`.
 
 ## Installation
 
@@ -36,7 +36,7 @@ namespace MyApp.Events
 {
     public class MyOutboxEvent : IOutboxEvent
     {
-        public int Id { get; init; }
+        public int Id { get; set; }
         public string EventType { get; set; }
         public string Payload { get; set; }
         public string Status { get; set; }
@@ -44,6 +44,30 @@ namespace MyApp.Events
         public DateTime? PublishedAt { get; set; }
         public DateTime? FailedAt { get; set; }
     }
+}
+```
+
+### Outbox Repository Interface
+
+Use the `IOutboxRepository` interface to handle the outbox pattern:
+
+```csharp
+public interface IOutboxRepository
+{
+    Task AddAsync<TEntity>(TEntity @event, CancellationToken cancellationToken = new())
+        where TEntity : class, IOutboxEvent;
+
+    Task<List<TEntity>> GetPendingEventsAsync<TEntity>(CancellationToken cancellationToken = new())
+        where TEntity : class, IOutboxEvent;
+
+    Task MarkEventAsPendingAsync<TEntity>(TEntity @event, CancellationToken cancellationToken = new())
+        where TEntity : class, IOutboxEvent;
+
+    Task MarkEventAsPublishedAsync<TEntity>(TEntity @event, CancellationToken cancellationToken = new())
+        where TEntity : class, IOutboxEvent;
+
+    Task MarkEventAsFailedAsync<TEntity>(TEntity @event, CancellationToken cancellationToken = new())
+        where TEntity : class, IOutboxEvent;
 }
 ```
 
@@ -66,10 +90,10 @@ Update the event's status using the provided extension methods:
 myEvent.MarkAsPending();
 ```
 
-- Mark as **Sent**:
+- Mark as **Published**:
 
 ```csharp
-myEvent.MarkAsSent();
+myEvent.MarkAsPublished();
 ```
 
 - Mark as **Failed**:
@@ -78,35 +102,7 @@ myEvent.MarkAsSent();
 myEvent.MarkAsFail();
 ```
 
-### Outbox Repository Interface
-
-Use the `IOutboxRepository` interface to handle events in the outbox pattern:
-
-```csharp
-public interface IOutboxRepository
-{
-    Task<IEnumerable<TEvent>> GetPendingEventsAsync<TEvent>(
-        CancellationToken cancellationToken = new()
-    ) where TEvent : IOutboxEvent;
-
-    Task SetEventAsProcessingAsync<TEvent>(
-        TEvent @event,
-        CancellationToken cancellationToken = new()
-    ) where TEvent : IOutboxEvent;
-
-    Task SetEventAsFailedAsync<TEvent>(
-        TEvent @event,
-        CancellationToken cancellationToken = new()
-    ) where TEvent : IOutboxEvent;
-
-    Task SetEventAsPublishedAsync<TEvent>(
-        TEvent @event,
-        CancellationToken cancellationToken = new()
-    ) where TEvent : IOutboxEvent;
-}
-```
-
-## Event States
+### Event States
 
 The outbox event can have the following states:
 
