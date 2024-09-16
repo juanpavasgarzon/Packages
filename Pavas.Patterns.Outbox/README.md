@@ -9,6 +9,7 @@ The `Pavas.Patterns.Outbox` NuGet package provides an interface and utility exte
 - Serialize and handle event payloads via extension methods.
 - Track event states (`Pending`, `Published`, `Fail`) using a simple, intuitive API.
 - Utilities to mark events as `Pending`, `Sent`, or `Fail`.
+- Custom repository interface for managing event state in a database.
 
 ## Installation
 
@@ -75,6 +76,34 @@ myEvent.MarkAsSent();
 
 ```csharp
 myEvent.MarkAsFail();
+```
+
+### Outbox Repository Interface
+
+Use the `IOutboxRepository` interface to handle events in the outbox pattern:
+
+```csharp
+public interface IOutboxRepository
+{
+    Task<IEnumerable<TEvent>> GetPendingEventsAsync<TEvent>(
+        CancellationToken cancellationToken = new()
+    ) where TEvent : IOutboxEvent;
+
+    Task SetEventAsProcessingAsync<TEvent>(
+        TEvent @event,
+        CancellationToken cancellationToken = new()
+    ) where TEvent : IOutboxEvent;
+
+    Task SetEventAsFailedAsync<TEvent>(
+        TEvent @event,
+        CancellationToken cancellationToken = new()
+    ) where TEvent : IOutboxEvent;
+
+    Task SetEventAsPublishedAsync<TEvent>(
+        TEvent @event,
+        CancellationToken cancellationToken = new()
+    ) where TEvent : IOutboxEvent;
+}
 ```
 
 ## Event States

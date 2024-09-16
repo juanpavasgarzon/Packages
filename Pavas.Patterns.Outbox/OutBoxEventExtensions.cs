@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Pavas.Patterns.Outbox.Contracts;
 
 namespace Pavas.Patterns.Outbox;
 

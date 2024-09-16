@@ -1,4 +1,4 @@
-﻿namespace Pavas.Patterns.Outbox;
+﻿namespace Pavas.Patterns.Outbox.Contracts;
 
 public interface IOutboxEvent
 {
