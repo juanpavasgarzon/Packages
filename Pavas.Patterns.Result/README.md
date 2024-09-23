@@ -46,18 +46,16 @@ ErrorFactory.CreateHttpError(
 Result.Failure(Error);
 ```
 
-### Matching on Result
+### Using ROP pattern
 
 ```csharp
-result.Match(
-    onSuccess: () => "Operation succeeded",
-    onFailure: error => $"Operation failed: {error.Message}"
-);
 
-result.Match(
-    onSuccess: value => $"Operation succeeded, result: {value}",
-    onFailure: error => $"Operation failed: {error.Message}"
-);
+result.Bind(..something logic)
+result.TryCatch(..something logic)
+result.ThenSuccess(..something logic)
+result.ThenFailure(..something logic)
+result.Match(..something logic)
+
 ```
 
 ## Benefits
