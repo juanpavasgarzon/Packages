@@ -1,6 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Version>1.0.0</Version>
+        <Company>Pavas</Company>
+        <Copyright>© 2024 Pavas.</Copyright>
+        <Product>Pavas Patterns</Product>
+        <Authors>Pavas</Authors>
+        <PackageId>Pavas.Patterns.UnitOfWork</PackageId>
+        <PackageIcon>Assets/pavas-icon.png</PackageIcon>
+        <PackageTags>UnitOfWork,DesignPattern,TransactionManagement,RepositoryPattern,Database,DataAccess,Persistence</PackageTags>
+        <PackageProjectUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.UnitOfWork</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/juanpavasgarzon/Packages/tree/master/Pavas.Patterns.UnitOfWork</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Description>A .NET library that implements the Unit of Work design pattern to manage database transactions, ensuring consistency across multiple operations. Ideal for handling multiple repositories and persisting changes as a single transaction.</Description>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,6 +24,11 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="README.md" Pack="true" PackagePath="."/>
+        <None Update="Assets/pavas-icon.png" Pack="true" PackagePath="."/>
     </ItemGroup>
 
 </Project>
