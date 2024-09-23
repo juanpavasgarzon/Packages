@@ -1,3 +1,5 @@
+using Pavas.Patterns.Context.Contracts;
+using Pavas.Patterns.Context.DependencyInjection;
 using Pavas.Patterns.UnitOfWork.Contracts;
 using Pavas.Patterns.UnitOfWork.DependencyInjection;
 using UnitOfWork.Example;
@@ -6,15 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddUnitOfWork<UnitOfWorkContext>(options =>
-{
-    options.ConnectionString = "";
-    options.ServiceLifetime = ServiceLifetime.Scoped;
-});
+builder.Services.AddScopedContext<TenantContext>();
+
+builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Scoped);
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -23,29 +21,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing",
-    "Bracing",
-    "Chilly",
-    "Cool",
-    "Mild",
-    "Warm",
-    "Balmy",
-    "Hot",
-    "Sweltering",
-    "Scorching"
-};
-
 app.MapGet("/weatherforecast", (IServiceProvider provider) =>
 {
-    var unitOfWork = provider.GetRequiredService<IUnitOfWork>();
+    var factory = provider.GetRequiredService<IContextFactory<TenantContext>>();
+    factory.Construct(new TenantContext { TenantId = "MyTenant" });
 
-    return Enumerable.Range(1, 5).Select(index => new WeatherForecast(
-        DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        Random.Shared.Next(-20, 55),
-        summaries[Random.Shared.Next(summaries.Length)]
-    )).ToArray();
+    var unitOfWork = provider.GetRequiredService<IUnitOfWork>();
+    var repository = unitOfWork.GetRepository<MyEntity>();
+    var result = repository.AddAsync(new MyEntity());
+    unitOfWork.SaveChangesAsync();
+    return result;
 }).WithName("GetWeatherForecast").WithOpenApi();
 
 app.Run();

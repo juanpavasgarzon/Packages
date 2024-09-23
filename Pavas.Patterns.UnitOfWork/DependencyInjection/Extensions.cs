@@ -7,50 +7,90 @@ using Pavas.Patterns.UnitOfWork.Options.Extensions;
 namespace Pavas.Patterns.UnitOfWork.DependencyInjection;
 
 /// <summary>
-/// Provides extension methods to add UnitOfWork and related services to the DI container.
+/// Provides extension methods to register UnitOfWork and DbContext services in the dependency injection container.
 /// </summary>
 public static class Extensions
 {
     /// <summary>
-    /// Registers the UnitOfWork pattern and DbContext in the dependency injection container with options configuration.
+    /// Registers the UnitOfWork pattern and DbContext in the dependency injection container using a specified configurator and service lifetime.
     /// </summary>
     /// <typeparam name="TContext">The type of the database context to register.</typeparam>
+    /// <typeparam name="TConfigurator">
+    /// The type of the configurator that implements <see cref="IUnitOfWorkConfigurator"/> to provide the configuration logic.
+    /// </typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
-    /// <param name="configureOptions">A delegate to configure <see cref="IDatabaseOptions"/>.</param>
-    public static void AddUnitOfWork<TContext>(this IServiceCollection services,
-        Action<IDatabaseOptions> configureOptions) where TContext : DatabaseContext
+    /// <param name="serviceLifetime">The lifetime (Scoped, Singleton, Transient) for the UnitOfWork and DbContext services.</param>
+    public static void AddUnitOfWork<TContext, TConfigurator>(this IServiceCollection services,
+        ServiceLifetime serviceLifetime) where TContext : DatabaseContext
+        where TConfigurator : class, IUnitOfWorkConfigurator, new()
     {
-        var options = new DatabaseOptions();
-        configureOptions.Invoke(options);
-        BaseAddUnitOfWork<TContext>(services, options);
+        services.AddDbContext<DatabaseContext, TContext>((provider, builder) =>
+        {
+            var configurator = new TConfigurator();
+            var options = configurator.Configure(provider, new DatabaseOptions());
+            builder.UseDatabaseOptions(options);
+        }, serviceLifetime, serviceLifetime);
+
+        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), serviceLifetime));
     }
 
     /// <summary>
-    /// Registers the UnitOfWork pattern and DbContext in the dependency injection container with options configuration that relies on a service provider.
+    /// Registers the UnitOfWork pattern and DbContext with a specified lifetime and configuration options.
     /// </summary>
     /// <typeparam name="TContext">The type of the database context to register.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
     /// <param name="configureOptions">A delegate to configure <see cref="IDatabaseOptions"/> with access to the <see cref="IServiceProvider"/>.</param>
+    /// <param name="serviceLifetime">The lifetime (singleton, scoped, transient) for the UnitOfWork and DbContext services.</param>
     public static void AddUnitOfWork<TContext>(this IServiceCollection services,
-        Action<IServiceProvider, IDatabaseOptions> configureOptions) where TContext : DatabaseContext
+        Action<IServiceProvider, IDatabaseOptions> configureOptions,
+        ServiceLifetime serviceLifetime) where TContext : DatabaseContext
     {
-        var serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(services);
-        var options = new DatabaseOptions();
-        configureOptions.Invoke(serviceProvider, options);
-        BaseAddUnitOfWork<TContext>(services, options);
+        services.AddDbContext<DatabaseContext, TContext>((provider, builder) =>
+        {
+            var options = new DatabaseOptions();
+            configureOptions.Invoke(provider, options);
+            builder.UseDatabaseOptions(options);
+        }, serviceLifetime, serviceLifetime);
+
+        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), serviceLifetime));
     }
 
     /// <summary>
-    /// Registers the UnitOfWork pattern and DbContext with the specified lifetime and options.
+    /// Registers the UnitOfWork pattern and DbContext with a specified lifetime and configuration options.
     /// </summary>
     /// <typeparam name="TContext">The type of the database context to register.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
-    /// <param name="options">The <see cref="IDatabaseOptions"/> that define the configuration and lifetime of the services.</param>
-    private static void BaseAddUnitOfWork<TContext>(this IServiceCollection services, IDatabaseOptions options)
+    /// <param name="configureOptions">A delegate to configure <see cref="IDatabaseOptions"/>.</param>
+    /// <param name="serviceLifetime">The lifetime (singleton, scoped, transient) for the UnitOfWork and DbContext services.</param>
+    public static void AddUnitOfWork<TContext>(this IServiceCollection services,
+        Action<IDatabaseOptions> configureOptions,
+        ServiceLifetime serviceLifetime) where TContext : DatabaseContext
+    {
+        services.AddDbContext<DatabaseContext, TContext>(builder =>
+        {
+            var options = new DatabaseOptions();
+            configureOptions.Invoke(options);
+            builder.UseDatabaseOptions(options);
+        }, serviceLifetime, serviceLifetime);
+
+        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), serviceLifetime));
+    }
+
+    /// <summary>
+    /// Registers the UnitOfWork pattern and DbContext with a specified lifetime.
+    /// </summary>
+    /// <typeparam name="TContext">The type of the database context to register.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
+    /// <param name="serviceLifetime">The lifetime (singleton, scoped, transient) for the UnitOfWork and DbContext services.</param>
+    public static void AddUnitOfWork<TContext>(this IServiceCollection services, ServiceLifetime serviceLifetime)
         where TContext : DatabaseContext
     {
-        var time = options.ServiceLifetime;
-        services.AddDbContext<DatabaseContext, TContext>(builder => { builder.UseDatabaseOptions(options); }, time);
-        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), time));
+        services.AddDbContext<DatabaseContext, TContext>(builder =>
+        {
+            var options = new DatabaseOptions();
+            builder.UseDatabaseOptions(options);
+        }, serviceLifetime, serviceLifetime);
+
+        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), serviceLifetime));
     }
 }

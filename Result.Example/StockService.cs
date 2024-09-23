@@ -5,7 +5,7 @@ namespace Result.Example;
 
 public class StockService(List<Stock> stocks)
 {
-    public List<Stock> Stocks { get; private init; } = stocks;
+    private List<Stock> Stocks { get; init; } = stocks;
 
     public Result<List<Stock>> ValidateStock(List<Stock> stocks)
     {
@@ -29,8 +29,6 @@ public class StockService(List<Stock> stocks)
             var existingStock = Stocks.Find(element => element.Name == stock.Name);
             existingStock!.Quantity -= stock.Quantity;
         }
-
-        throw new Exception("Example exception");
 
         return Result<List<Stock>>.Success(stocks);
     }

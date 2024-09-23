@@ -4,8 +4,10 @@ using Pavas.Patterns.UnitOfWork.Contracts;
 
 namespace Pavas.Patterns.UnitOfWork;
 
-internal class Repository<TEntity>(DbContext context, CancellationToken token = new())
-    : IRepository<TEntity> where TEntity : class, IEntity
+internal class Repository<TEntity>(
+    DbContext context,
+    CancellationToken token = new()
+) : IRepository<TEntity> where TEntity : class
 {
     public async Task<TEntity?> GetByIdAsync(int id)
     {

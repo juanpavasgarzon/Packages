@@ -10,7 +10,7 @@ public interface IUnitOfWork
     /// <typeparam name="TEntity">The type of entity for which the repository is requested.</typeparam>
     /// <param name="token">A cancellation token to cancel the operation if needed.</param>
     /// <returns>An instance of the repository for the specified entity.</returns>
-    public IRepository<TEntity> GetRepository<TEntity>(CancellationToken token = new()) where TEntity : class, IEntity;
+    public IRepository<TEntity> GetRepository<TEntity>(CancellationToken token = new()) where TEntity : class;
 
     /// <summary>
     /// Begins a database transaction asynchronously.

@@ -7,57 +7,59 @@ using Pavas.Patterns.UnitOfWork.Options.Extensions;
 namespace Pavas.Patterns.UnitOfWork.Abstracts;
 
 /// <summary>
-/// Abstract base class for configuring a database context in EF Core, with support for soft delete and tenant management.
+/// Abstract base class for configuring a database context in EF Core, with support for soft delete, timestamps, and tenant management.
+/// Provides mechanisms for automatically handling entity state changes for common patterns such as 
+/// soft delete, multi-tenancy, and auditing (timestamps).
 /// </summary>
 public abstract class DatabaseContext : DbContext
 {
     private readonly IDatabaseOptions _options;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DatabaseContext"/> class with EF Core options.
+    /// Initializes a new instance of the <see cref="DatabaseContext"/> class using EF Core options.
     /// </summary>
-    /// <param name="contextOptions">The options used by the database context.</param>
+    /// <param name="contextOptions">The options used by the database context for configuration.</param>
     protected DatabaseContext(DbContextOptions contextOptions)
     {
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
         var options = extension?.GetDatabaseOptions();
         _options = options ?? throw new InvalidOperationException("DatabaseOptionsExtension is required");
+
         AddChangeTrackerEvents();
+
+        if (!options.EnsureCreated)
+            return;
+
+        base.Database.EnsureCreated();
     }
 
     /// <summary>
-    /// Adds event handlers to the ChangeTracker to handle soft delete and base entity modifications.
+    /// Adds event handlers to the ChangeTracker to handle soft delete, timestamps, and tenant information automatically.
     /// </summary>
     private void AddChangeTrackerEvents()
     {
-        if (!_options.SoftDelete)
-        {
-            base.ChangeTracker.StateChanged += SoftDeleteEvent;
-            base.ChangeTracker.Tracked += SoftDeleteEvent;
-        }
-
-        base.ChangeTracker.StateChanged += BaseEntityEvent;
-        base.ChangeTracker.Tracked += BaseEntityEvent;
+        base.ChangeTracker.StateChanged += EventByEntityType;
+        base.ChangeTracker.Tracked += EventByEntityType;
     }
 
     /// <summary>
-    /// Retrieves the database options configuration.
+    /// Retrieves the database options configuration, which includes settings for tenant management and soft delete.
     /// </summary>
-    /// <returns>An instance of <see cref="IDatabaseOptions"/> containing the configuration.</returns>
+    /// <returns>An instance of <see cref="IDatabaseOptions"/> containing the current configuration.</returns>
     protected IDatabaseOptions GetDatabaseOptions()
     {
         return _options;
     }
 
     /// <summary>
-    /// Defines the database provider using the provided connection string.
+    /// Defines the database provider using the connection string provided in the options.
     /// </summary>
     /// <param name="optionsBuilder">The builder used to configure the database context.</param>
-    /// <param name="connectionString">The connection string for the database.</param>
+    /// <param name="connectionString">The connection string for the database provider.</param>
     protected abstract void GetProvider(DbContextOptionsBuilder optionsBuilder, string connectionString);
 
     /// <summary>
-    /// Configures the database context using the provider and connection string.
+    /// Configures the database context using the provider and connection string from the database options.
     /// </summary>
     /// <param name="optionsBuilder">The builder used to configure the database context.</param>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,69 +69,95 @@ public abstract class DatabaseContext : DbContext
     }
 
     /// <summary>
-    /// Configures the model by applying global filters and loading configurations from the assembly.
+    /// Configures the entity model by applying global query filters for tenancy and soft delete,
+    /// and loading entity configurations from the current assembly.
     /// </summary>
-    /// <param name="modelBuilder">The builder used to construct the model for the database.</param>
+    /// <param name="modelBuilder">The builder used to construct the entity model.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasQueryFilter<IEntity>(e => e.TenantId == "Default");
+        modelBuilder.HasQueryFilter<ITenancy>(e => e.TenantId == _options.TenantId);
+        modelBuilder.HasQueryFilter<ISoftDelete>(e => !e.IsDeleted);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 
     /// <summary>
-    /// Event handler for base entity changes such as creation and modification.
-    /// Automatically updates timestamps and tenant information.
+    /// Handles state changes for base entities by applying tenant, timestamp, and soft delete rules.
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
-    /// <param name="args">Event arguments related to the entity entry.</param>
-    private void BaseEntityEvent(object? sender, EntityEntryEventArgs args)
+    /// <param name="args">The event arguments related to the state changes of the entity entry.</param>
+    private void EventByEntityType(object? sender, EntityEntryEventArgs args)
     {
         if (args is not EntityStateChangedEventArgs or EntityTrackedEventArgs)
             return;
 
-        if (args.Entry.State is not (EntityState.Added or EntityState.Modified))
-            return;
+        switch (args.Entry.Entity)
+        {
+            case ITimestamps entity:
+                Timestamps(entity, args);
+                break;
+            case ITenancy entity:
+                Tenancy(entity, args);
+                break;
+            case ISoftDelete entity:
+                SoftDelete(entity, args);
+                break;
+        }
+    }
 
-        if (args.Entry.Entity is not IEntity entity)
+    /// <summary>
+    /// Applies timestamp management by setting creation and update times when entities are added or modified.
+    /// </summary>
+    /// <param name="entity">The entity implementing <see cref="ITimestamps"/>.</param>
+    /// <param name="args">The current event arguments related to the entity entry.</param>
+    private static void Timestamps(ITimestamps entity, EntityEntryEventArgs args)
+    {
+        if (args.Entry.State is not (EntityState.Added or EntityState.Modified))
             return;
 
         switch (args.Entry.State)
         {
+            case EntityState.Added:
+                entity.CreatedAt = DateTime.UtcNow;
+                break;
             case EntityState.Modified:
                 entity.UpdatedAt = DateTime.UtcNow;
                 break;
-
-            case EntityState.Added:
-                entity.CreatedAt = DateTime.UtcNow;
-                entity.UpdatedAt = DateTime.UtcNow;
-                entity.TenantId = _options.DefaultTenant;
-                break;
-
-            case EntityState.Deleted:
             case EntityState.Detached:
             case EntityState.Unchanged:
+            case EntityState.Deleted:
             default:
                 break;
         }
     }
 
     /// <summary>
-    /// Event handler for soft delete logic. Converts a deletion into an update by setting a deletion timestamp.
+    /// Applies tenant management logic by setting the default tenant ID when a new entity is added.
     /// </summary>
-    /// <param name="sender">The sender of the event.</param>
-    /// <param name="args">Event arguments related to the entity entry.</param>
-    private static void SoftDeleteEvent(object? sender, EntityEntryEventArgs args)
+    /// <param name="entity">The entity implementing <see cref="ITenancy"/>.</param>
+    /// <param name="args">The current event arguments related to the entity entry.</param>
+    private void Tenancy(ITenancy entity, EntityEntryEventArgs args)
     {
-        if (args is not EntityStateChangedEventArgs or EntityTrackedEventArgs)
+        if (args.Entry.State is not EntityState.Added)
+            return;
+
+        entity.TenantId = _options.TenantId;
+    }
+
+    /// <summary>
+    /// Applies soft delete logic by setting the deletion timestamp and marking the entity as deleted.
+    /// </summary>
+    /// <param name="entity">The entity implementing <see cref="ISoftDelete"/>.</param>
+    /// <param name="args">The current event arguments related to the entity entry.</param>
+    private void SoftDelete(ISoftDelete entity, EntityEntryEventArgs args)
+    {
+        if (!_options.SoftDelete)
             return;
 
         if (args.Entry.State is not EntityState.Deleted)
             return;
 
-        if (args.Entry.Entity is not ISoftDelete entity)
-            return;
-
+        entity.IsDeleted = true;
         entity.DeletedAt = DateTime.UtcNow;
         args.Entry.State = EntityState.Modified;
     }

@@ -15,8 +15,8 @@ internal class ExtensionInfo(DatabaseOptionsExtension extension) : DbContextOpti
     public override void PopulateDebugInfo(IDictionary<string, string> debugInfo)
     {
         debugInfo["DatabaseOptions:ConnectionString"] = _extension.GetDatabaseOptions().ConnectionString;
-        debugInfo["DatabaseOptions:DefaultTenant"] = _extension.GetDatabaseOptions().DefaultTenant;
         debugInfo["DatabaseOptions:SoftDelete"] = _extension.GetDatabaseOptions().SoftDelete.ToString();
+        debugInfo["DatabaseOptions:Tenant"] = _extension.GetDatabaseOptions().TenantId;
     }
 
     public override bool ShouldUseSameServiceProvider(DbContextOptionsExtensionInfo other)

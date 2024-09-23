@@ -22,11 +22,11 @@ internal class DatabaseOptionsExtension : IDbContextOptionsExtension
 
     public void Validate(IDbContextOptions options)
     {
-        if (string.IsNullOrEmpty(_databaseOptions.ConnectionString))
-            throw new InvalidOperationException("ConnectionString is required.");
+        var connectionString = _databaseOptions.ConnectionString;
+        if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrWhiteSpace(connectionString))
+            return;
 
-        if (string.IsNullOrWhiteSpace(_databaseOptions.DefaultTenant))
-            throw new InvalidOperationException("DefaultTenant is required.");
+        throw new InvalidOperationException("ConnectionString is required.");
     }
 
     public IDatabaseOptions GetDatabaseOptions()

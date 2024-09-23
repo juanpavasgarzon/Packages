@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Pavas.Patterns.UnitOfWork.Contracts;
 
 public interface IDatabaseOptions
@@ -18,7 +16,7 @@ public interface IDatabaseOptions
     /// <value>
     /// A <see cref="string"/> representing the default tenant ID.
     /// </value>
-    public string DefaultTenant { get; set; }
+    public string TenantId { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether soft delete logic is enabled for entities implementing <see cref="ISoftDelete"/>.
@@ -29,10 +27,10 @@ public interface IDatabaseOptions
     public bool SoftDelete { get; set; }
 
     /// <summary>
-    /// Gets or sets the service lifetime for dependency injection, with a default of scoped.
+    /// Gets or sets a value indicating whether create database logic />.
     /// </summary>
     /// <value>
-    /// A <see cref="ServiceLifetime"/> value defining the lifetime of services.
+    /// A <see cref="bool"/> indicating whether ensure create database is enabled.
     /// </value>
-    public ServiceLifetime ServiceLifetime { get; set; }
+    public bool EnsureCreated { get; set; }
 }

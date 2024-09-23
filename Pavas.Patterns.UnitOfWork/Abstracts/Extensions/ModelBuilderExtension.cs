@@ -1,13 +1,12 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Pavas.Patterns.UnitOfWork.Contracts;
 
 namespace Pavas.Patterns.UnitOfWork.Abstracts.Extensions;
 
-public static class ModelBuilderExtension
+internal static class ModelBuilderExtension
 {
-    public static void HasQueryFilter<TEntity>(this ModelBuilder builder, Expression<Func<IEntity, bool>> filter)
+    public static void HasQueryFilter<TEntity>(this ModelBuilder builder, Expression<Func<TEntity, bool>> filter)
     {
         var types = builder.Model.GetEntityTypes()
             .Select(entityType => entityType.ClrType)

@@ -2,7 +2,11 @@ using System.Linq.Expressions;
 
 namespace Pavas.Patterns.UnitOfWork.Contracts;
 
-public interface IRepository<TEntity> where TEntity : class, IEntity
+/// <summary>
+/// Defines a generic repository pattern for handling data access operations on entities
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity managed by the repository.</typeparam>
+public interface IRepository<TEntity> where TEntity : class
 {
     /// <summary>
     /// Asynchronously retrieves a single record by its ID.

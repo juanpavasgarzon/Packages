@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Pavas.Patterns.UnitOfWork.Contracts;
 
 namespace Pavas.Patterns.UnitOfWork.Options;
@@ -6,12 +5,12 @@ namespace Pavas.Patterns.UnitOfWork.Options;
 internal class DatabaseOptions : IDatabaseOptions
 {
     public string ConnectionString { get; set; } = string.Empty;
-    public string DefaultTenant { get; set; } = "Default";
+    public string TenantId { get; set; } = string.Empty;
     public bool SoftDelete { get; set; } = false;
-    public ServiceLifetime ServiceLifetime { get; set; } = ServiceLifetime.Scoped;
+    public bool EnsureCreated { get; set; } = false;
 
     public override string ToString()
     {
-        return $"Connection={ConnectionString};Tenant={DefaultTenant};SoftDelete={SoftDelete}";
+        return $"Connection={ConnectionString};Tenant={TenantId};SoftDelete={SoftDelete}";
     }
 }

@@ -1,6 +1,5 @@
 namespace Context.Example.Constants;
 
-
 public static class Resources
 {
     public const string Contexts = "contexts";

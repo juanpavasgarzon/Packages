@@ -27,8 +27,11 @@ Defines the operations available for working with entities in the database. Oper
 - **RemoveAsync(TEntity entry)**: Remove an entity.
 - **RemoveManyAsync(IEnumerable<TEntity> entries)**: Remove multiple entities.
 
-### IEntity
-Represents a base entity that includes metadata like `CreatedAt`, `UpdatedAt`, and `TenantId`. This interface ensures that all entities have basic auditing and tenant information.
+### ITenancy
+Represents a base entity that includes metadata like `TenantId`. This interface ensures that all entities have tenant information.
+
+### ITimestamps
+Represents a base entity that includes metadata like `CreatedAt` and `UpdatedAt` This interface ensures that all entities have basic auditing and tenant information.
 
 ### ISoftDelete
 Provides support for soft delete functionality by including a `DeletedAt` timestamp.
@@ -55,7 +58,7 @@ To configure the Unit of Work in your project, register it in the dependency inj
 services.AddUnitOfWork<YourDbContext>(options =>
 {
     options.ConnectionString = "your-connection-string";
-    options.DefaultTenant = "DefaultTenant";
+    options.TenantId = "MyTenant";
     options.SoftDelete = true;
 });
 ```
