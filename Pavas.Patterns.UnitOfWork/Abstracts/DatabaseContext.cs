@@ -88,21 +88,17 @@ public abstract class DatabaseContext : DbContext
     /// <param name="args">The event arguments related to the state changes of the entity entry.</param>
     private void EventByEntityType(object? sender, EntityEntryEventArgs args)
     {
-        if (args is not EntityStateChangedEventArgs or EntityTrackedEventArgs)
+        if (args is not (EntityStateChangedEventArgs or EntityTrackedEventArgs))
             return;
 
-        switch (args.Entry.Entity)
-        {
-            case ITimestamps entity:
-                Timestamps(entity, args);
-                break;
-            case ITenancy entity:
-                Tenancy(entity, args);
-                break;
-            case ISoftDelete entity:
-                SoftDelete(entity, args);
-                break;
-        }
+        if (args.Entry.Entity is ITimestamps timestampsEntity)
+            Timestamps(timestampsEntity, args);
+
+        if (args.Entry.Entity is ITenancy tenancyEntity)
+            Tenancy(tenancyEntity, args);
+
+        if (args.Entry.Entity is ISoftDelete softDeleteEntity)
+            SoftDelete(softDeleteEntity, args);
     }
 
     /// <summary>
@@ -136,10 +132,14 @@ public abstract class DatabaseContext : DbContext
     /// </summary>
     /// <param name="entity">The entity implementing <see cref="ITenancy"/>.</param>
     /// <param name="args">The current event arguments related to the entity entry.</param>
+    /// <exception cref="ArgumentException">Thrown when the TenantId is not provided in the options.</exception>
     private void Tenancy(ITenancy entity, EntityEntryEventArgs args)
     {
         if (args.Entry.State is not EntityState.Added)
             return;
+
+        if (string.IsNullOrEmpty(_options.TenantId) || string.IsNullOrWhiteSpace(_options.TenantId))
+            throw new ArgumentException("Tenant Id is required when using ITenancy implementation");
 
         entity.TenantId = _options.TenantId;
     }
@@ -154,11 +154,22 @@ public abstract class DatabaseContext : DbContext
         if (!_options.SoftDelete)
             return;
 
-        if (args.Entry.State is not EntityState.Deleted)
-            return;
-
-        entity.IsDeleted = true;
-        entity.DeletedAt = DateTime.UtcNow;
-        args.Entry.State = EntityState.Modified;
+        switch (args.Entry.State)
+        {
+            case EntityState.Added:
+                entity.IsDeleted = false;
+                entity.DeletedAt = null;
+                break;
+            case EntityState.Deleted:
+                entity.IsDeleted = true;
+                entity.DeletedAt = DateTime.UtcNow;
+                args.Entry.State = EntityState.Modified;
+                break;
+            case EntityState.Detached:
+            case EntityState.Unchanged:
+            case EntityState.Modified:
+            default:
+                break;
+        }
     }
 }

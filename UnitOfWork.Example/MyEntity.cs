@@ -18,5 +18,5 @@ public class MyEntity : ITimestamps, ITenancy, ISoftDelete
     [MaxLength(255)] public string TenantId { get; set; } = string.Empty;
 
     [DefaultValue(false)] public bool IsDeleted { get; set; }
-    [Timestamp] public DateTime? DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

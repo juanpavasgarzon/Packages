@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScopedContext<TenantContext>();
-
 builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Scoped);
 
 var app = builder.Build();
@@ -21,16 +20,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", (IServiceProvider provider) =>
+app.MapGet("/weatherforecast", async (IServiceProvider provider) =>
 {
     var factory = provider.GetRequiredService<IContextFactory<TenantContext>>();
     factory.Construct(new TenantContext { TenantId = "MyTenant" });
 
     var unitOfWork = provider.GetRequiredService<IUnitOfWork>();
     var repository = unitOfWork.GetRepository<MyEntity>();
-    var result = repository.AddAsync(new MyEntity());
-    unitOfWork.SaveChangesAsync();
-    return result;
+    var a = await repository.GetByIdAsync(13);
+    await unitOfWork.SaveChangesAsync();
+    return a;
 }).WithName("GetWeatherForecast").WithOpenApi();
 
 app.Run();
