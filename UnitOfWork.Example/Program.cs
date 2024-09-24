@@ -7,7 +7,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingletonContext(new TenantContext { TenantId = "MyTenant" });
+builder.Services.AddSingletonContext(new TenantContext { TenantId = "MyTenant2" });
 builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Singleton);
 
 var app = builder.Build();

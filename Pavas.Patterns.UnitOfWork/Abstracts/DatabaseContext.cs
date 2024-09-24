@@ -13,7 +13,8 @@ namespace Pavas.Patterns.UnitOfWork.Abstracts;
 /// </summary>
 public abstract class DatabaseContext : DbContext
 {
-    private readonly IDatabaseOptions _options;
+    private readonly string _connectionString;
+    private readonly bool _softDelete;
     private readonly string _tenantId;
 
     /// <summary>
@@ -24,8 +25,12 @@ public abstract class DatabaseContext : DbContext
     {
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
         var options = extension?.GetDatabaseOptions();
-        _options = options ?? throw new InvalidOperationException("DatabaseOptionsExtension is required");
-        _tenantId = GetTenant(options);
+        if (options is null)
+            throw new InvalidOperationException("DatabaseOptionsExtension is required");
+
+        _connectionString = options.ConnectionString;
+        _tenantId = options.TenantId;
+        _softDelete = options.SoftDelete;
 
         AddEntityEvents();
         if (!options.EnsureCreated)
@@ -44,15 +49,6 @@ public abstract class DatabaseContext : DbContext
     }
 
     /// <summary>
-    /// Retrieves the database options configuration, which includes settings for tenant management and soft delete.
-    /// </summary>
-    /// <returns>An instance of <see cref="IDatabaseOptions"/> containing the current configuration.</returns>
-    protected IDatabaseOptions GetDatabaseOptions()
-    {
-        return _options;
-    }
-
-    /// <summary>
     /// Defines the database provider using the connection string provided in the options.
     /// </summary>
     /// <param name="optionsBuilder">The builder used to configure the database context.</param>
@@ -65,7 +61,7 @@ public abstract class DatabaseContext : DbContext
     /// <param name="optionsBuilder">The builder used to configure the database context.</param>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        GetProvider(optionsBuilder, _options.ConnectionString);
+        GetProvider(optionsBuilder, _connectionString);
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -139,10 +135,10 @@ public abstract class DatabaseContext : DbContext
         if (args.Entry.State is not EntityState.Added)
             return;
 
-        if (string.IsNullOrEmpty(_options.TenantId) || string.IsNullOrWhiteSpace(_options.TenantId))
+        if (string.IsNullOrEmpty(_tenantId) || string.IsNullOrWhiteSpace(_tenantId))
             throw new ArgumentException("Tenant Id is required when using ITenancy implementation");
 
-        entity.TenantId = _options.TenantId;
+        entity.TenantId = _tenantId;
     }
 
     /// <summary>
@@ -152,7 +148,7 @@ public abstract class DatabaseContext : DbContext
     /// <param name="args">The current event arguments related to the entity entry.</param>
     private void SoftDelete(ISoftDelete entity, EntityEntryEventArgs args)
     {
-        if (!_options.SoftDelete)
+        if (!_softDelete)
             return;
 
         switch (args.Entry.State)
@@ -172,17 +168,5 @@ public abstract class DatabaseContext : DbContext
             default:
                 break;
         }
-    }
-
-    /// <summary>
-    /// Retrieves the tenant identifier from the provided database options.
-    /// </summary>
-    /// <param name="databaseOptions">The <see cref="IDatabaseOptions"/> containing the configuration for the database, including the tenant information.</param>
-    /// <returns>
-    /// A <see cref="string"/> representing the tenant identifier from the database options.
-    /// </returns>
-    private static string GetTenant(IDatabaseOptions databaseOptions)
-    {
-        return databaseOptions.TenantId;
     }
 }

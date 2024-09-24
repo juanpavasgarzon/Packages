@@ -11,6 +11,6 @@ internal class DatabaseOptions : IDatabaseOptions
 
     public override string ToString()
     {
-        return $"Connection={ConnectionString};Tenant={TenantId};SoftDelete={SoftDelete}";
+        return $"Connection={ConnectionString};Tenant={TenantId};SoftDelete={SoftDelete};EnsureCreated={EnsureCreated};";
     }
 }
