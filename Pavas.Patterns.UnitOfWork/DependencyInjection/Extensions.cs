@@ -28,6 +28,10 @@ public static class Extensions
         {
             var configurator = new TConfigurator();
             var options = configurator.Configure(provider, new DatabaseOptions());
+
+            if (string.IsNullOrEmpty(options.ConnectionString))
+                throw new ArgumentException("ConnectionString is required in implementation");
+
             builder.UseDatabaseOptions(options);
         }, serviceLifetime, serviceLifetime);
 
@@ -49,6 +53,10 @@ public static class Extensions
         {
             var options = new DatabaseOptions();
             configureOptions.Invoke(provider, options);
+
+            if (string.IsNullOrEmpty(options.ConnectionString))
+                throw new ArgumentException("ConnectionString is required in implementation");
+
             builder.UseDatabaseOptions(options);
         }, serviceLifetime, serviceLifetime);
 
@@ -70,24 +78,10 @@ public static class Extensions
         {
             var options = new DatabaseOptions();
             configureOptions.Invoke(options);
-            builder.UseDatabaseOptions(options);
-        }, serviceLifetime, serviceLifetime);
 
-        services.Add(new ServiceDescriptor(typeof(IUnitOfWork), typeof(UnitOfWork), serviceLifetime));
-    }
+            if (string.IsNullOrEmpty(options.ConnectionString))
+                throw new ArgumentException("ConnectionString is required in implementation");
 
-    /// <summary>
-    /// Registers the UnitOfWork pattern and DbContext with a specified lifetime.
-    /// </summary>
-    /// <typeparam name="TContext">The type of the database context to register.</typeparam>
-    /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
-    /// <param name="serviceLifetime">The lifetime (singleton, scoped, transient) for the UnitOfWork and DbContext services.</param>
-    public static void AddUnitOfWork<TContext>(this IServiceCollection services, ServiceLifetime serviceLifetime)
-        where TContext : DatabaseContext
-    {
-        services.AddDbContext<DatabaseContext, TContext>(builder =>
-        {
-            var options = new DatabaseOptions();
             builder.UseDatabaseOptions(options);
         }, serviceLifetime, serviceLifetime);
 
