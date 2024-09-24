@@ -14,6 +14,7 @@ namespace Pavas.Patterns.UnitOfWork.Abstracts;
 public abstract class DatabaseContext : DbContext
 {
     private readonly IDatabaseOptions _options;
+    private readonly string _tenantId;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabaseContext"/> class using EF Core options.
@@ -24,9 +25,9 @@ public abstract class DatabaseContext : DbContext
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
         var options = extension?.GetDatabaseOptions();
         _options = options ?? throw new InvalidOperationException("DatabaseOptionsExtension is required");
+        _tenantId = GetTenant(options);
 
-        AddChangeTrackerEvents();
-
+        AddEntityEvents();
         if (!options.EnsureCreated)
             return;
 
@@ -36,7 +37,7 @@ public abstract class DatabaseContext : DbContext
     /// <summary>
     /// Adds event handlers to the ChangeTracker to handle soft delete, timestamps, and tenant information automatically.
     /// </summary>
-    private void AddChangeTrackerEvents()
+    private void AddEntityEvents()
     {
         base.ChangeTracker.StateChanged += EventByEntityType;
         base.ChangeTracker.Tracked += EventByEntityType;
@@ -75,8 +76,8 @@ public abstract class DatabaseContext : DbContext
     /// <param name="modelBuilder">The builder used to construct the entity model.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasQueryFilter<ITenancy>(e => e.TenantId == _options.TenantId);
         modelBuilder.HasQueryFilter<ISoftDelete>(e => !e.IsDeleted);
+        modelBuilder.HasQueryFilter<ITenancy>(e => e.TenantId == _tenantId);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
@@ -171,5 +172,17 @@ public abstract class DatabaseContext : DbContext
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Retrieves the tenant identifier from the provided database options.
+    /// </summary>
+    /// <param name="databaseOptions">The <see cref="IDatabaseOptions"/> containing the configuration for the database, including the tenant information.</param>
+    /// <returns>
+    /// A <see cref="string"/> representing the tenant identifier from the database options.
+    /// </returns>
+    private static string GetTenant(IDatabaseOptions databaseOptions)
+    {
+        return databaseOptions.TenantId;
     }
 }

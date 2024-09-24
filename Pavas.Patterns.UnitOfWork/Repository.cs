@@ -19,9 +19,9 @@ internal class Repository<TEntity>(
         return context.Set<TEntity>().Where(filter).FirstOrDefaultAsync(token);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter)
+    public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await context.Set<TEntity>().Where(filter).ToListAsync(token);
+        return await context.Set<TEntity>().ToListAsync(token);
     }
 
     public async Task<IQueryable<TEntity>> GetQueryAsync()

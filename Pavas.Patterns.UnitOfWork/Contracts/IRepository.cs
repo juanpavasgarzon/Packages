@@ -25,9 +25,8 @@ public interface IRepository<TEntity> where TEntity : class
     /// <summary>
     /// Asynchronously retrieves all records that match the provided filter.
     /// </summary>
-    /// <param name="filter">The expression to filter the entities.</param>
     /// <returns>A task that represents the asynchronous operation, containing a collection of matching entities.</returns>
-    public Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> filter);
+    public Task<IEnumerable<TEntity>> GetAllAsync();
 
     /// <summary>
     /// Asynchronously retrieves an IQueryable to allow further query operations on the entities.
