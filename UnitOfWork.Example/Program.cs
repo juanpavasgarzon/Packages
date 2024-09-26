@@ -14,10 +14,8 @@ var app = builder.Build();
 
 var unitOfWork = app.Services.GetRequiredService<IUnitOfWork>();
 var repository = await unitOfWork.GetRepositoryAsync<MyEntity>();
-var entities = await repository.GetAllAsync();
+var results = await repository.GetAllAsync();
 
-Console.WriteLine(entities);
-
-await unitOfWork.SaveChangesAsync();
+Console.WriteLine(results);
 
 app.Run();
