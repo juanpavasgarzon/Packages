@@ -13,7 +13,7 @@ builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(Servic
 var app = builder.Build();
 
 var unitOfWork = app.Services.GetRequiredService<IUnitOfWork>();
-var repository = await unitOfWork.GetRepositoryAsync<MyEntity, RepositoryConfigurator>();
+var repository = await unitOfWork.GetRepositoryAsync<MyEntity>();
 var entities = await repository.GetAllAsync();
 
 Console.WriteLine(entities);
