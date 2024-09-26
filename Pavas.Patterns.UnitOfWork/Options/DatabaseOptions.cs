@@ -20,6 +20,12 @@ internal class DatabaseOptions : IDatabaseOptions
     /// A <see cref="string"/> representing the default tenant ID.
     /// </value>
     public string TenantId { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Gets or sets a value indicating a correlation logic is enabled for entities implementing <see cref="ICorrelated"/>.
+    /// Gets or sets the correlation ID, which is used to track related operations across different services and repositories.
+    /// </summary>
+    public string CorrelationId { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
     /// Gets or sets a value indicating whether soft delete logic is enabled for entities implementing <see cref="ISoftDelete"/>.

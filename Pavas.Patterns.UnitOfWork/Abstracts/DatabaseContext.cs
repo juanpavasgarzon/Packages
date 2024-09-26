@@ -17,7 +17,7 @@ public abstract class DatabaseContext : DbContext
     private readonly string _connectionString;
     private readonly bool _softDelete;
     private string _tenantId;
-    private string _correlationId = string.Empty;
+    private string _correlationId;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabaseContext"/> class using EF Core options.
@@ -33,6 +33,7 @@ public abstract class DatabaseContext : DbContext
         _connectionString = options.ConnectionString;
         _softDelete = options.SoftDelete;
         _tenantId = options.TenantId;
+        _correlationId = options.CorrelationId;
 
         AddEntityEvents();
         if (!options.EnsureCreated)
