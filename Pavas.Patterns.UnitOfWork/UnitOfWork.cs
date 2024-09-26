@@ -71,7 +71,9 @@ internal class UnitOfWork(DatabaseContext context, IServiceProvider provider) : 
         if (!options.CorrelationId.IsNullOrEmptyOrWhiteSpace())
             context.SetCorrelationId(options.TenantId);
 
-        return new Task<IRepository<TEntity>>(() => new Repository<TEntity>(context, token), token);
+        var task = new Task<IRepository<TEntity>>(() => new Repository<TEntity>(context, token), token);
+        task.Start();
+        return task;
     }
 
     /// <summary>
