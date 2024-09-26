@@ -96,6 +96,7 @@ public class MyDatabaseOptions : IDatabaseOptions
 {
     public string ConnectionString { get; set; } = "your-connection-string";
     public string TenantId { get; set; } = "your-connection-string";
+    public string CorrelationId { get; set; } = "6e343h3f3434h3jj3434v3ggg34"; // use in scope or transient injection
     public bool SoftDelete { get; set; } = true;
     public bool EnsureCreated { get; set; } = true;
 }
