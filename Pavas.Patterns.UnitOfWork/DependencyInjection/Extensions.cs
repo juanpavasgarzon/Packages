@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pavas.Patterns.UnitOfWork.Abstracts;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options;
 using Pavas.Patterns.UnitOfWork.Options.Extensions;
 
@@ -29,7 +30,7 @@ public static class Extensions
             var configurator = new TConfigurator();
             var options = configurator.Configure(provider, new DatabaseOptions());
 
-            if (string.IsNullOrEmpty(options.ConnectionString))
+            if (options.ConnectionString.IsNullOrEmptyOrWhiteSpace())
                 throw new ArgumentException("ConnectionString is required in implementation");
 
             builder.UseDatabaseOptions(options);
@@ -54,7 +55,7 @@ public static class Extensions
             var options = new DatabaseOptions();
             configureOptions.Invoke(provider, options);
 
-            if (string.IsNullOrEmpty(options.ConnectionString))
+            if (options.ConnectionString.IsNullOrEmptyOrWhiteSpace())
                 throw new ArgumentException("ConnectionString is required in implementation");
 
             builder.UseDatabaseOptions(options);
@@ -79,7 +80,7 @@ public static class Extensions
             var options = new DatabaseOptions();
             configureOptions.Invoke(options);
 
-            if (string.IsNullOrEmpty(options.ConnectionString))
+            if (options.ConnectionString.IsNullOrEmptyOrWhiteSpace())
                 throw new ArgumentException("ConnectionString is required in implementation");
 
             builder.UseDatabaseOptions(options);

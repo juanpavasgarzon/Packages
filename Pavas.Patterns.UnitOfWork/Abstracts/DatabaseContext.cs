@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Pavas.Patterns.UnitOfWork.Abstracts.Extensions;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options.Extensions;
 
 namespace Pavas.Patterns.UnitOfWork.Abstracts;
@@ -15,7 +16,8 @@ public abstract class DatabaseContext : DbContext
 {
     private readonly string _connectionString;
     private readonly bool _softDelete;
-    private readonly string _tenantId;
+    private string _tenantId;
+    private string _correlationId = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DatabaseContext"/> class using EF Core options.
@@ -29,8 +31,8 @@ public abstract class DatabaseContext : DbContext
             throw new InvalidOperationException("DatabaseOptionsExtension is required");
 
         _connectionString = options.ConnectionString;
-        _tenantId = options.TenantId;
         _softDelete = options.SoftDelete;
+        _tenantId = options.TenantId;
 
         AddEntityEvents();
         if (!options.EnsureCreated)
@@ -96,6 +98,9 @@ public abstract class DatabaseContext : DbContext
 
         if (args.Entry.Entity is ISoftDelete softDeleteEntity)
             SoftDelete(softDeleteEntity, args);
+
+        if (args.Entry.Entity is ICorrelated correlatedEntity)
+            Correlated(correlatedEntity, args);
     }
 
     /// <summary>
@@ -135,7 +140,7 @@ public abstract class DatabaseContext : DbContext
         if (args.Entry.State is not EntityState.Added)
             return;
 
-        if (string.IsNullOrEmpty(_tenantId) || string.IsNullOrWhiteSpace(_tenantId))
+        if (_tenantId.IsNullOrEmptyOrWhiteSpace())
             throw new ArgumentException("Tenant Id is required when using ITenancy implementation");
 
         entity.TenantId = _tenantId;
@@ -168,5 +173,56 @@ public abstract class DatabaseContext : DbContext
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Applies correlation ID logic to an entity based on its current state.
+    /// When the entity is in the Added or Modified state, it assigns the current correlation ID.
+    /// </summary>
+    /// <param name="entity">The entity implementing <see cref="ICorrelated"/> that requires a correlation ID.</param>
+    /// <param name="args">The event arguments containing information about the entity's entry and its state.</param>
+    private void Correlated(ICorrelated entity, EntityEntryEventArgs args)
+    {
+        if (_correlationId.IsNullOrEmptyOrWhiteSpace())
+            throw new ArgumentException("Correlation Id is required when using ICorrelated implementation");
+
+        switch (args.Entry.State)
+        {
+            case EntityState.Added:
+            case EntityState.Modified:
+                entity.CorrelationId = _correlationId;
+                break;
+            case EntityState.Detached:
+            case EntityState.Deleted:
+            case EntityState.Unchanged:
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Sets the correlation ID for the current instance, allowing related operations or events
+    /// to be tracked under a common identifier.
+    /// </summary>
+    /// <param name="correlationId">The correlation ID to associate with this instance, used for tracking operations.</param>
+    public void SetCorrelationId(string correlationId)
+    {
+        if (correlationId.IsNullOrEmptyOrWhiteSpace())
+            throw new ArgumentException("Value is required when you set the correlation ID");
+
+        _correlationId = correlationId;
+    }
+
+    /// <summary>
+    /// Sets the tenant ID for the current instance, allowing related operations or events
+    /// to be tracked under a common identifier.
+    /// </summary>
+    /// <param name="tenantId">The tenant ID to associate with this instance.</param>
+    public void SetTenantId(string tenantId)
+    {
+        if (tenantId.IsNullOrEmptyOrWhiteSpace())
+            throw new ArgumentException("Value is required when you set the tenant ID");
+
+        _tenantId = tenantId;
     }
 }
