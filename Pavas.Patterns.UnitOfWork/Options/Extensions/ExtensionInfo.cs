@@ -35,7 +35,6 @@ internal class ExtensionInfo(DatabaseOptionsExtension extension) : DbContextOpti
         debugInfo["DatabaseOptions:ConnectionString"] = _extension.GetDatabaseOptions().ConnectionString;
         debugInfo["DatabaseOptions:TenantId"] = _extension.GetDatabaseOptions().TenantId;
         debugInfo["DatabaseOptions:CorrelationId"] = _extension.GetDatabaseOptions().CorrelationId;
-        debugInfo["DatabaseOptions:SoftDelete"] = _extension.GetDatabaseOptions().SoftDelete.ToString();
         debugInfo["DatabaseOptions:EnsureCreated"] = _extension.GetDatabaseOptions().EnsureCreated.ToString();
     }
 

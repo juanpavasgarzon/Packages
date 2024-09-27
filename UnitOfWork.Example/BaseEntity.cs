@@ -4,7 +4,7 @@ using Pavas.Patterns.UnitOfWork.Contracts;
 
 namespace UnitOfWork.Example;
 
-public abstract class BaseEntity : ITimestamps, ITenancy, ISoftDelete, ICorrelated
+public abstract class BaseEntity : ITimestamps, ITenancy, ICorrelated
 {
     [Timestamp] public DateTime CreatedAt { get; set; }
     [Timestamp] public DateTime? UpdatedAt { get; set; }

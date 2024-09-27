@@ -14,7 +14,6 @@ public class UnitOfWorkConfigurator : IUnitOfWorkConfigurator
         databaseOptions.ConnectionString = tenant.Connection;
         databaseOptions.TenantId = tenant.TenantId;
         databaseOptions.EnsureCreated = true;
-        databaseOptions.SoftDelete = true;
         return databaseOptions;
     }
 }

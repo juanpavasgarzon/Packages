@@ -25,14 +25,6 @@ public interface IDatabaseOptions
     public string CorrelationId { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether soft delete logic is enabled for entities implementing <see cref="ISoftDelete"/>.
-    /// </summary>
-    /// <value>
-    /// A <see cref="bool"/> indicating whether soft delete is enabled.
-    /// </value>
-    public bool SoftDelete { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether create database logic />.
     /// </summary>
     /// <value>

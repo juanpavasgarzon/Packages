@@ -17,7 +17,6 @@ namespace Pavas.Patterns.UnitOfWork.Abstracts;
 public abstract class DatabaseContext : DbContext
 {
     private readonly string _connectionString;
-    private readonly bool _softDelete;
     private string _tenantId;
     private string _correlationId;
 
@@ -29,19 +28,23 @@ public abstract class DatabaseContext : DbContext
     {
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
         if (extension is null)
+        {
             throw new RequireMemberException("DatabaseOptionsExtension is required");
+        }
 
         extension.Validate(contextOptions);
         var options = extension.GetDatabaseOptions();
 
         _connectionString = options.ConnectionString;
-        _softDelete = options.SoftDelete;
         _tenantId = options.TenantId;
         _correlationId = options.CorrelationId;
 
         AddEntityEvents();
+
         if (!options.EnsureCreated)
+        {
             return;
+        }
 
         base.Database.EnsureCreated();
     }
@@ -84,7 +87,9 @@ public abstract class DatabaseContext : DbContext
             var parameter = Expression.Parameter(clrType, "e");
             var filter = GetGlobalFilters(parameter, clrType);
             if (filter is null)
+            {
                 continue;
+            }
 
             var lambda = Expression.Lambda(filter, parameter);
             modelBuilder.Entity(clrType).HasQueryFilter(lambda);
@@ -117,12 +122,32 @@ public abstract class DatabaseContext : DbContext
 
         if (typeof(ITenancy).IsAssignableFrom(clrType))
         {
+            var tenant = GetTenantId();
             var tenantProperty = Expression.Property(parameter, nameof(ITenancy.TenantId));
-            var tenantValue = Expression.Constant(_tenantId, typeof(string));
+            var tenantValue = Expression.Constant(tenant, typeof(string));
             filters.Add(Expression.Equal(tenantProperty, tenantValue));
         }
 
         return filters.Count > 0 ? filters.Aggregate(Expression.AndAlso) : null;
+    }
+
+    /// <summary>
+    /// Retrieves the tenant identifier for the current context.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> representing the tenant ID.
+    /// </returns>
+    /// <exception cref="RequireMemberException">
+    /// Thrown when the tenant ID is not set or is empty. A tenant ID is required when implementing <see cref="ITenancy"/>.
+    /// </exception>
+    private string GetTenantId()
+    {
+        if (_tenantId.IsNullOrEmptyOrWhiteSpace())
+        {
+            throw new RequireMemberException("Tenant Id is required when using ITenancy implementation");
+        }
+
+        return _tenantId;
     }
 
     /// <summary>
@@ -134,19 +159,29 @@ public abstract class DatabaseContext : DbContext
     private void EventByEntityType(object? sender, EntityEntryEventArgs args)
     {
         if (args is not (EntityStateChangedEventArgs or EntityTrackedEventArgs))
+        {
             return;
+        }
 
         if (args.Entry.Entity is ITimestamps timestampsEntity)
+        {
             Timestamps(timestampsEntity, args);
+        }
 
         if (args.Entry.Entity is ITenancy tenancyEntity)
+        {
             Tenancy(tenancyEntity, args);
+        }
 
         if (args.Entry.Entity is ISoftDelete softDeleteEntity)
+        {
             SoftDelete(softDeleteEntity, args);
+        }
 
         if (args.Entry.Entity is ICorrelated correlatedEntity)
+        {
             Correlated(correlatedEntity, args);
+        }
     }
 
     /// <summary>
@@ -157,7 +192,9 @@ public abstract class DatabaseContext : DbContext
     private static void Timestamps(ITimestamps entity, EntityEntryEventArgs args)
     {
         if (args.Entry.State is not (EntityState.Added or EntityState.Modified))
+        {
             return;
+        }
 
         switch (args.Entry.State)
         {
@@ -184,10 +221,14 @@ public abstract class DatabaseContext : DbContext
     private void Tenancy(ITenancy entity, EntityEntryEventArgs args)
     {
         if (args.Entry.State is not EntityState.Added)
+        {
             return;
+        }
 
         if (_tenantId.IsNullOrEmptyOrWhiteSpace())
+        {
             throw new RequireMemberException("Tenant Id is required when using ITenancy implementation");
+        }
 
         entity.TenantId = _tenantId;
     }
@@ -197,10 +238,12 @@ public abstract class DatabaseContext : DbContext
     /// </summary>
     /// <param name="entity">The entity implementing <see cref="ISoftDelete"/>.</param>
     /// <param name="args">The current event arguments related to the entity entry.</param>
-    private void SoftDelete(ISoftDelete entity, EntityEntryEventArgs args)
+    private static void SoftDelete(ISoftDelete entity, EntityEntryEventArgs args)
     {
-        if (!_softDelete)
+        if (args.Entry.State is not (EntityState.Added or EntityState.Deleted))
+        {
             return;
+        }
 
         switch (args.Entry.State)
         {
@@ -230,7 +273,9 @@ public abstract class DatabaseContext : DbContext
     private void Correlated(ICorrelated entity, EntityEntryEventArgs args)
     {
         if (_correlationId.IsNullOrEmptyOrWhiteSpace())
+        {
             throw new RequireMemberException("Correlation Id is required when using ICorrelated implementation");
+        }
 
         switch (args.Entry.State)
         {
@@ -254,7 +299,9 @@ public abstract class DatabaseContext : DbContext
     public void SetCorrelationId(string correlationId)
     {
         if (correlationId.IsNullOrEmptyOrWhiteSpace())
+        {
             throw new RequireMemberException("Value is required when you set the correlation ID");
+        }
 
         _correlationId = correlationId;
     }
@@ -267,7 +314,9 @@ public abstract class DatabaseContext : DbContext
     public void SetTenantId(string tenantId)
     {
         if (tenantId.IsNullOrEmptyOrWhiteSpace())
+        {
             throw new RequireMemberException("Value is required when you set the tenant ID");
+        }
 
         _tenantId = tenantId;
     }
