@@ -48,8 +48,6 @@ app.MapGet("/{id:int}", async (IUnitOfWork unitOfWork, int id) =>
     var repository = await unitOfWork.GetRepositoryAsync<MyEntity>();
     await repository.RemoveByKeyAsync(id);
     await unitOfWork.SaveChangesAsync();
-
-    Label:
     var results = await repository.GetAllAsync();
     return results;
 });
