@@ -20,20 +20,12 @@ internal class DatabaseOptions : IDatabaseOptions
     /// A <see cref="string"/> representing the default tenant ID.
     /// </value>
     public string TenantId { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets a value indicating a correlation logic is enabled for entities implementing <see cref="ICorrelated"/>.
     /// Gets or sets the correlation ID, which is used to track related operations across different services and repositories.
     /// </summary>
     public string CorrelationId { get; set; } = Guid.NewGuid().ToString();
-
-    /// <summary>
-    /// Gets or sets a value indicating whether soft delete logic is enabled for entities implementing <see cref="ISoftDelete"/>.
-    /// </summary>
-    /// <value>
-    /// A <see cref="bool"/> indicating whether soft delete is enabled.
-    /// </value>
-    public bool SoftDelete { get; set; } = false;
 
     /// <summary>
     /// Gets or sets a value indicating whether create database logic />.
@@ -56,8 +48,10 @@ internal class DatabaseOptions : IDatabaseOptions
         var interpolatedStringHandler = new DefaultInterpolatedStringHandler();
         interpolatedStringHandler.AppendLiteral("ConnectionString:");
         interpolatedStringHandler.AppendFormatted(ConnectionString);
-        interpolatedStringHandler.AppendLiteral("SoftDelete:");
-        interpolatedStringHandler.AppendFormatted(SoftDelete);
+        interpolatedStringHandler.AppendLiteral("TenantId:");
+        interpolatedStringHandler.AppendFormatted(TenantId);
+        interpolatedStringHandler.AppendLiteral("CorrelationId:");
+        interpolatedStringHandler.AppendFormatted(CorrelationId);
         interpolatedStringHandler.AppendLiteral("EnsureCreated:");
         interpolatedStringHandler.AppendFormatted(EnsureCreated);
         return interpolatedStringHandler.ToStringAndClear();
