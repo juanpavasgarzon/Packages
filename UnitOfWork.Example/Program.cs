@@ -46,11 +46,7 @@ app.UseHttpsRedirection();
 app.MapGet("/{id:int}", async (IUnitOfWork unitOfWork, int id) =>
 {
     var repository = await unitOfWork.GetRepositoryAsync<MyEntity>();
-    var entity = await repository.GetByIdAsync(id);
-    if (entity is null)
-        goto Label;
-
-    await repository.RemoveAsync(entity!);
+    await repository.RemoveByKeyAsync(id);
     await unitOfWork.SaveChangesAsync();
 
     Label:

@@ -9,11 +9,14 @@ namespace Pavas.Patterns.UnitOfWork.Contracts;
 public interface IRepository<TEntity> where TEntity : class
 {
     /// <summary>
-    /// Asynchronously retrieves a single record by its ID.
+    /// Asynchronously retrieves an entity from the context based on its primary key.
     /// </summary>
-    /// <param name="id">The ID of the entity to retrieve.</param>
-    /// <returns>A task that represents the asynchronous operation, containing the entity if found, or null.</returns>
-    public Task<TEntity?> GetByIdAsync(int id);
+    /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>
+    /// <param name="key">The key of the entity to retrieve.</param>
+    /// <returns>
+    /// A <see cref="Task{TEntity}"/> that represents the asynchronous operation. The task result contains the entity if found, or null if no entity with the given key is found.
+    /// </returns>
+    public Task<TEntity?> GetByKeyAsync<TKey>(TKey key);
 
     /// <summary>
     /// Asynchronously retrieves a single record based on the provided filter.
@@ -54,6 +57,16 @@ public interface IRepository<TEntity> where TEntity : class
     /// <param name="entry">The entity to update.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task UpdateAsync(TEntity entry);
+
+    /// <summary>
+    /// Asynchronously removes an entity from the context based on its primary key.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>
+    /// <param name="key">The key of the entity to be removed.</param>
+    /// <returns>
+    /// A <see cref="Task"/> that represents the asynchronous operation. The task will complete when the entity has been removed.
+    /// </returns>
+    public Task RemoveByKeyAsync<TKey>(TKey key);
 
     /// <summary>
     /// Asynchronously removes an existing entity from the context.

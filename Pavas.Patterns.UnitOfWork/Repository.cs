@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Exceptions;
 
 namespace Pavas.Patterns.UnitOfWork;
 
@@ -8,13 +9,16 @@ internal class Repository<TEntity>(DbContext context, CancellationToken token = 
     : IRepository<TEntity> where TEntity : class
 {
     /// <summary>
-    /// Asynchronously retrieves a single record by its ID.
+    /// Asynchronously retrieves an entity from the context based on its primary key.
     /// </summary>
-    /// <param name="id">The ID of the entity to retrieve.</param>
-    /// <returns>A task that represents the asynchronous operation, containing the entity if found, or null.</returns>
-    public async Task<TEntity?> GetByIdAsync(int id)
+    /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>
+    /// <param name="key">The key of the entity to retrieve.</param>
+    /// <returns>
+    /// A <see cref="Task{TEntity}"/> that represents the asynchronous operation. The task result contains the entity if found, or null if no entity with the given key is found.
+    /// </returns>
+    public async Task<TEntity?> GetByKeyAsync<TKey>(TKey key)
     {
-        return await context.Set<TEntity>().FindAsync([id], token);
+        return await context.Set<TEntity>().FindAsync([key], token);
     }
 
     /// <summary>
@@ -73,6 +77,23 @@ internal class Repository<TEntity>(DbContext context, CancellationToken token = 
     public async Task UpdateAsync(TEntity entry)
     {
         await Task.Run(() => context.Set<TEntity>().Update(entry), token);
+    }
+
+    /// <summary>
+    /// Asynchronously removes an entity from the context based on its primary key.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>
+    /// <param name="key">The key of the entity to be removed.</param>
+    /// <returns>
+    /// A <see cref="Task"/> that represents the asynchronous operation. The task will complete when the entity has been removed.
+    /// </returns>
+    public async Task RemoveByKeyAsync<TKey>(TKey key)
+    {
+        var entity = await context.Set<TEntity>().FindAsync([key], token);
+        if (entity is null)
+            throw new NotFoundException("Entity not found.");
+
+        await Task.Run(() => context.Set<TEntity>().Remove(entity), token);
     }
 
     /// <summary>

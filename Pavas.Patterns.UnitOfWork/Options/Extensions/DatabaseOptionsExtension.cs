@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Exceptions;
 
 namespace Pavas.Patterns.UnitOfWork.Options.Extensions;
 
@@ -47,7 +48,7 @@ internal class DatabaseOptionsExtension : IDbContextOptionsExtension
         if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrWhiteSpace(connectionString))
             return;
 
-        throw new InvalidOperationException("ConnectionString is required.");
+        throw new RequireMemberException("ConnectionString is required.");
     }
 
     /// <summary>

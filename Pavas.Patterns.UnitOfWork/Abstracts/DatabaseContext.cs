@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Exceptions;
 using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options.Extensions;
 
@@ -28,7 +29,7 @@ public abstract class DatabaseContext : DbContext
     {
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
         if (extension is null)
-            throw new InvalidOperationException("DatabaseOptionsExtension is required");
+            throw new RequireMemberException("DatabaseOptionsExtension is required");
 
         extension.Validate(contextOptions);
         var options = extension.GetDatabaseOptions();
@@ -186,7 +187,7 @@ public abstract class DatabaseContext : DbContext
             return;
 
         if (_tenantId.IsNullOrEmptyOrWhiteSpace())
-            throw new ArgumentException("Tenant Id is required when using ITenancy implementation");
+            throw new RequireMemberException("Tenant Id is required when using ITenancy implementation");
 
         entity.TenantId = _tenantId;
     }
@@ -229,7 +230,7 @@ public abstract class DatabaseContext : DbContext
     private void Correlated(ICorrelated entity, EntityEntryEventArgs args)
     {
         if (_correlationId.IsNullOrEmptyOrWhiteSpace())
-            throw new ArgumentException("Correlation Id is required when using ICorrelated implementation");
+            throw new RequireMemberException("Correlation Id is required when using ICorrelated implementation");
 
         switch (args.Entry.State)
         {
@@ -253,7 +254,7 @@ public abstract class DatabaseContext : DbContext
     public void SetCorrelationId(string correlationId)
     {
         if (correlationId.IsNullOrEmptyOrWhiteSpace())
-            throw new ArgumentException("Value is required when you set the correlation ID");
+            throw new RequireMemberException("Value is required when you set the correlation ID");
 
         _correlationId = correlationId;
     }
@@ -266,7 +267,7 @@ public abstract class DatabaseContext : DbContext
     public void SetTenantId(string tenantId)
     {
         if (tenantId.IsNullOrEmptyOrWhiteSpace())
-            throw new ArgumentException("Value is required when you set the tenant ID");
+            throw new RequireMemberException("Value is required when you set the tenant ID");
 
         _tenantId = tenantId;
     }
