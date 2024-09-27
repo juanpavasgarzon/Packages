@@ -1,6 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Pavas.Patterns.UnitOfWork.Abstracts.Extensions;
 using Pavas.Patterns.UnitOfWork.Contracts;
 using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options.Extensions;
@@ -26,9 +27,11 @@ public abstract class DatabaseContext : DbContext
     protected DatabaseContext(DbContextOptions contextOptions)
     {
         var extension = contextOptions.FindExtension<DatabaseOptionsExtension>();
-        var options = extension?.GetDatabaseOptions();
-        if (options is null)
+        if (extension is null)
             throw new InvalidOperationException("DatabaseOptionsExtension is required");
+
+        extension.Validate(contextOptions);
+        var options = extension.GetDatabaseOptions();
 
         _connectionString = options.ConnectionString;
         _softDelete = options.SoftDelete;
@@ -75,10 +78,50 @@ public abstract class DatabaseContext : DbContext
     /// <param name="modelBuilder">The builder used to construct the entity model.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasQueryFilter<ISoftDelete>(e => !e.IsDeleted);
-        modelBuilder.HasQueryFilter<ITenancy>(e => e.TenantId == _tenantId);
+        foreach (var clrType in modelBuilder.Model.GetEntityTypes().Select(type => type.ClrType))
+        {
+            var parameter = Expression.Parameter(clrType, "e");
+            var filter = GetGlobalFilters(parameter, clrType);
+            if (filter is null)
+                continue;
+
+            var lambda = Expression.Lambda(filter, parameter);
+            modelBuilder.Entity(clrType).HasQueryFilter(lambda);
+        }
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    /// <summary>
+    /// Generates global query filters for entities based on the interfaces they implement.
+    /// If the entity type implements <see cref="ISoftDelete"/>, a filter is applied to exclude soft-deleted entities.
+    /// If the entity type implements <see cref="ITenancy"/>, a filter is applied to include only entities that match the specified tenant.
+    /// </summary>
+    /// <param name="parameter">The <see cref="ParameterExpression"/> representing the entity in the expression.</param>
+    /// <param name="clrType">The CLR type of the entity being processed.</param>
+    /// <returns>
+    /// An <see cref="Expression"/> that combines the applicable filters using a logical AND, or null if no filters are applicable.
+    /// </returns>
+    [SuppressMessage("ReSharper", "InvertIf")]
+    private Expression? GetGlobalFilters(ParameterExpression parameter, Type clrType)
+    {
+        var filters = new List<Expression>();
+
+        if (typeof(ISoftDelete).IsAssignableFrom(clrType))
+        {
+            var softDeleteProperty = Expression.Property(parameter, nameof(ISoftDelete.IsDeleted));
+            filters.Add(Expression.Not(softDeleteProperty));
+        }
+
+        if (typeof(ITenancy).IsAssignableFrom(clrType))
+        {
+            var tenantProperty = Expression.Property(parameter, nameof(ITenancy.TenantId));
+            var tenantValue = Expression.Constant(_tenantId, typeof(string));
+            filters.Add(Expression.Equal(tenantProperty, tenantValue));
+        }
+
+        return filters.Count > 0 ? filters.Aggregate(Expression.AndAlso) : null;
     }
 
     /// <summary>
@@ -86,6 +129,7 @@ public abstract class DatabaseContext : DbContext
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The event arguments related to the state changes of the entity entry.</param>
+    [SuppressMessage("ReSharper", "InvertIf")]
     private void EventByEntityType(object? sender, EntityEntryEventArgs args)
     {
         if (args is not (EntityStateChangedEventArgs or EntityTrackedEventArgs))

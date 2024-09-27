@@ -9,12 +9,14 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+        <PackageReference Include="Pavas.Runtime.TenantContext" Version="1.0.0" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+        <PackageReference Include="Serilog" Version="4.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pavas.Patterns.Context\Pavas.Patterns.Context.csproj" />
       <ProjectReference Include="..\Pavas.Patterns.UnitOfWork\Pavas.Patterns.UnitOfWork.csproj" />
     </ItemGroup>
 

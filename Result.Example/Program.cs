@@ -4,13 +4,13 @@ using Result.Example;
 
 List<Stock> mockStocks =
 [
-    new Stock
+    new()
     {
         Name = "Computer",
         Quantity = 10,
         Price = 199
     },
-    new Stock
+    new()
     {
         Name = "Cellphone",
         Quantity = 10,

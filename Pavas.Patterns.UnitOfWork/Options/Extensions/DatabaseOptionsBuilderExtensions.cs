@@ -18,6 +18,7 @@ internal static class DatabaseOptionsBuilderExtensions
     public static void UseDatabaseOptions(this DbContextOptionsBuilder optionsBuilder, IDatabaseOptions databaseOptions)
     {
         var extension = new DatabaseOptionsExtension(databaseOptions);
-        (optionsBuilder as IDbContextOptionsBuilderInfrastructure).AddOrUpdateExtension(extension);
+        IDbContextOptionsBuilderInfrastructure optionsBuilderInfrastructure = optionsBuilder;
+        optionsBuilderInfrastructure.AddOrUpdateExtension(extension);
     }
 }
