@@ -9,9 +9,10 @@ public class UnitOfWorkConfigurator : IUnitOfWorkConfigurator
     public IDatabaseOptions Configure(IServiceProvider serviceProvider, IDatabaseOptions databaseOptions)
     {
         var tenantContext = serviceProvider.GetRequiredService<IContextProvider<TenantContext>>();
+        var tenant = tenantContext.Context!;
 
-        databaseOptions.ConnectionString = "Host=localhost;Database=UnitOfWork;Username=root;Password=root";
-        databaseOptions.TenantId = tenantContext.Context!.TenantId;
+        databaseOptions.ConnectionString = tenant.Connection;
+        databaseOptions.TenantId = tenant.TenantId;
         databaseOptions.EnsureCreated = true;
         databaseOptions.SoftDelete = true;
         return databaseOptions;
