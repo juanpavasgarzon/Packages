@@ -6,11 +6,30 @@ public class HostedService(IUnitOfWork unitOfWork) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        await unitOfWork.ExecutionStrategyAsync(async transaction =>
         {
             var repository = unitOfWork.GetRepository<MyEntity>();
-            await repository.AddAsync(new MyEntity());
-            await unitOfWork.SaveChangesAsync(stoppingToken);
-        }
+            try
+            {
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await unitOfWork.SaveChangesAsync(stoppingToken);
+
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+                await repository.AddAsync(new MyEntity(), stoppingToken);
+
+                await unitOfWork.SaveChangesAsync(stoppingToken);
+                await transaction.CommitAsync(stoppingToken);
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync(stoppingToken);
+                Console.WriteLine(e);
+            }
+        }, stoppingToken);
     }
 }

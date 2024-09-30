@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Entities;
 using Pavas.Patterns.UnitOfWork.Exceptions;
 using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options.Extensions;

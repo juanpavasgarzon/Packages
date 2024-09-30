@@ -1,4 +1,4 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+namespace Pavas.Patterns.UnitOfWork.Contracts.Entities;
 
 /// <summary>
 /// Represents an entity or service that is associated with a specific tenant in a multi-tenant system.

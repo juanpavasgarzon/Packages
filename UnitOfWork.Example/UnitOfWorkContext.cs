@@ -11,7 +11,7 @@ internal sealed class UnitOfWorkContext(ILogger<UnitOfWorkContext> logger, DbCon
     protected override void GetProvider(DbContextOptionsBuilder optionsBuilder, string connectionString)
     {
         var version = ServerVersion.AutoDetect(connectionString);
-        optionsBuilder.UseMySql(connectionString, version, builder => builder.EnableRetryOnFailure(3));
+        optionsBuilder.UseMySql(connectionString, version, builder => { builder.EnableRetryOnFailure(3); });
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

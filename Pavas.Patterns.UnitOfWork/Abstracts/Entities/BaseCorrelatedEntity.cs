@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Entities;
 
 namespace Pavas.Patterns.UnitOfWork.Abstracts.Entities;
 
-public abstract class CorrelatedEntity : ICorrelated
+public abstract class BaseCorrelatedEntity : ICorrelated
 {
     [MaxLength(255)] public string CorrelationId { get; set; } = string.Empty;
 }

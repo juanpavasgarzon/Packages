@@ -1,4 +1,4 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+namespace Pavas.Patterns.UnitOfWork.Contracts.Entities;
 
 /// <summary>
 /// Represents an entity that is associated with a correlation ID, 

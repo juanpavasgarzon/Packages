@@ -44,15 +44,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.MapGet("/{id:int}", async (IUnitOfWork unitOfWork, int id) =>
-{
-    var repository = unitOfWork.GetRepository<MyEntity>();
-    await repository.RemoveByKeyAsync(id);
-    await unitOfWork.SaveChangesAsync();
-    var results = await repository.GetAllAsync();
-    return results;
-});
-
 app.UseTenantContextMiddleware();
 app.Run();

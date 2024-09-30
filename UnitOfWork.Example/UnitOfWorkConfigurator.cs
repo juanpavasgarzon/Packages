@@ -1,4 +1,5 @@
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Options;
 using Pavas.Runtime.TenantContext;
 
 namespace UnitOfWork.Example;

@@ -1,4 +1,6 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Entities;
+
+namespace Pavas.Patterns.UnitOfWork.Contracts.Options;
 
 public interface IDatabaseOptions
 {

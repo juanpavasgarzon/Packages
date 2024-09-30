@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pavas.Patterns.UnitOfWork.Abstracts;
 using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Options;
 using Pavas.Patterns.UnitOfWork.Exceptions;
 using Pavas.Patterns.UnitOfWork.Extensions;
 using Pavas.Patterns.UnitOfWork.Options;

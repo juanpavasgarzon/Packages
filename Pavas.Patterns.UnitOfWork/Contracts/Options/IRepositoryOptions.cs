@@ -1,4 +1,4 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+namespace Pavas.Patterns.UnitOfWork.Contracts.Options;
 
 /// <summary>
 /// Defines the options that can be configured for a repository, including tenant and correlation identifiers.

@@ -1,4 +1,4 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+namespace Pavas.Patterns.UnitOfWork.Contracts.Entities;
 
 /// <summary>
 /// Represents an entity that supports soft delete functionality by maintaining a deletion timestamp.

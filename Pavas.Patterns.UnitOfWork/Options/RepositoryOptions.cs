@@ -1,4 +1,4 @@
-using Pavas.Patterns.UnitOfWork.Contracts;
+using Pavas.Patterns.UnitOfWork.Contracts.Options;
 
 namespace Pavas.Patterns.UnitOfWork.Options;
 

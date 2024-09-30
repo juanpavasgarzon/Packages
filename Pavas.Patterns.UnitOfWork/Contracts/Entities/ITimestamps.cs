@@ -1,4 +1,4 @@
-namespace Pavas.Patterns.UnitOfWork.Contracts;
+namespace Pavas.Patterns.UnitOfWork.Contracts.Entities;
 
 /// <summary>
 /// Represents a base entity with common properties for auditing and tenant management.
