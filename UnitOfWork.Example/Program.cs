@@ -32,7 +32,9 @@ builder.Services.AddTenantContext([
     }
 ]);
 
-builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Scoped);
+builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Singleton);
+
+builder.Services.AddHostedService<HostedService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -45,7 +47,7 @@ app.UseHttpsRedirection();
 
 app.MapGet("/{id:int}", async (IUnitOfWork unitOfWork, int id) =>
 {
-    var repository = await unitOfWork.GetRepositoryAsync<MyEntity>();
+    var repository = unitOfWork.GetRepository<MyEntity>();
     await repository.RemoveByKeyAsync(id);
     await unitOfWork.SaveChangesAsync();
     var results = await repository.GetAllAsync();

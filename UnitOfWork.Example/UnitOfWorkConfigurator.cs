@@ -1,4 +1,3 @@
-using Pavas.Patterns.Context.Contracts;
 using Pavas.Patterns.UnitOfWork.Contracts;
 using Pavas.Runtime.TenantContext;
 
@@ -8,11 +7,10 @@ public class UnitOfWorkConfigurator : IUnitOfWorkConfigurator
 {
     public IDatabaseOptions Configure(IServiceProvider serviceProvider, IDatabaseOptions databaseOptions)
     {
-        var tenantContext = serviceProvider.GetRequiredService<IContextProvider<TenantContext>>();
-        var tenant = tenantContext.Context!;
+        var tenantContext = serviceProvider.GetRequiredService<List<Tenant>>();
 
-        databaseOptions.ConnectionString = tenant.Connection;
-        databaseOptions.TenantId = tenant.TenantId;
+        databaseOptions.ConnectionString = tenantContext[0].Connection;
+        databaseOptions.TenantId = tenantContext[0].Id;
         databaseOptions.EnsureCreated = true;
         return databaseOptions;
     }

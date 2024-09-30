@@ -9,6 +9,14 @@ namespace Pavas.Patterns.UnitOfWork.Contracts;
 public interface IRepository<TEntity> where TEntity : class
 {
     /// <summary>
+    /// retrieves a cancellation token from the context.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="CancellationToken"/> that represents the asynchronous token.
+    /// </returns>
+    public CancellationToken GetCancellationToken();
+
+    /// <summary>
     /// Asynchronously retrieves an entity from the context based on its primary key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>

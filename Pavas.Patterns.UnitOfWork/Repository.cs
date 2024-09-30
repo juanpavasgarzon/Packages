@@ -9,6 +9,17 @@ internal class Repository<TEntity>(DbContext context, CancellationToken token = 
     : IRepository<TEntity> where TEntity : class
 {
     /// <summary>
+    /// retrieves a cancellation token from the context.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="CancellationToken"/> that represents the asynchronous token.
+    /// </returns>
+    public CancellationToken GetCancellationToken()
+    {
+        return token;
+    }
+
+    /// <summary>
     /// Asynchronously retrieves an entity from the context based on its primary key.
     /// </summary>
     /// <typeparam name="TKey">The type of the key used to identify the entity.</typeparam>
@@ -91,7 +102,7 @@ internal class Repository<TEntity>(DbContext context, CancellationToken token = 
     {
         var entity = await context.Set<TEntity>().FindAsync([key], token);
         if (entity is null)
-            throw new NotFoundException("Entity not found.");
+            throw new NotFoundException("FullEntity not found.");
 
         await Task.Run(() => context.Set<TEntity>().Remove(entity), token);
     }

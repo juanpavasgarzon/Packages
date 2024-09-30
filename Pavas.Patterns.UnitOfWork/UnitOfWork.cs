@@ -9,6 +9,48 @@ namespace Pavas.Patterns.UnitOfWork;
 internal class UnitOfWork(DatabaseContext context, IServiceProvider provider) : IUnitOfWork
 {
     /// <summary>
+    /// Retrieves a repository for a specific entity type.
+    /// This is the default repository retrieval method and does not apply any custom configuration options.
+    /// The repository does not track changes made to the entity instances.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type for which the repository is being retrieved. Must be a class.</typeparam>
+    /// <returns>The result contains an instance of <see cref="IRepository{TEntity}"/> for the specified entity type.</returns>
+    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+    {
+        return BaseGetRepository<TEntity>(new RepositoryOptions());
+    }
+
+    /// <summary>
+    /// Retrieves a repository for a specific entity type with custom configuration.
+    /// The repository is configured based on the provided <see cref="IRepositoryOptions"/>.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type for which the repository is being retrieved. Must be a class.</typeparam>
+    /// <param name="configure">An <see cref="Action{IRepositoryOptions}"/> delegate used to configure the repository options.</param>
+    /// <returns>The result contains an instance of <see cref="IRepository{TEntity}"/> for the specified entity type, configured with the provided options.</returns>
+    public IRepository<TEntity> GetRepository<TEntity>(Action<IRepositoryOptions> configure)
+        where TEntity : class
+    {
+        var options = new RepositoryOptions();
+        configure.Invoke(options);
+        return BaseGetRepository<TEntity>(options);
+    }
+
+    /// <summary>
+    /// Retrieves a repository for a specific entity type, using a configurator of type <typeparamref name="TConfigurator"/>.
+    /// The configurator is responsible for configuring the repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type for which the repository is being retrieved. Must be a class.</typeparam>
+    /// <typeparam name="TConfigurator">The type of the configurator used to configure the repository. Must implement <see cref="IRepositoryConfigurator"/> and have a parameterless constructor.</typeparam>
+    /// <returns>The result contains an instance of <see cref="IRepository{TEntity}"/> for the specified entity type, configured by the specified configurator.</returns>
+    public IRepository<TEntity> GetRepository<TEntity, TConfigurator>() where TEntity : class
+        where TConfigurator : class, IRepositoryConfigurator, new()
+    {
+        var configurator = new TConfigurator();
+        var options = configurator.Configure(provider, new RepositoryOptions());
+        return BaseGetRepository<TEntity>(options);
+    }
+
+    /// <summary>
     /// Asynchronously retrieves a repository for a specific entity type.
     /// This is the default repository retrieval method and does not apply any custom configuration options.
     /// The repository does not track changes made to the entity instances.
@@ -52,6 +94,24 @@ internal class UnitOfWork(DatabaseContext context, IServiceProvider provider) : 
         var configurator = new TConfigurator();
         var options = configurator.Configure(provider, new RepositoryOptions());
         return BaseGetRepositoryAsync<TEntity>(options, token);
+    }
+
+    /// <summary>
+    /// Retrieves a repository for a specific entity type based on the provided repository options.
+    /// This method handles tenant ID and correlation ID configurations before returning the repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type for which the repository is being retrieved. Must be a class.</typeparam>
+    /// <param name="options">The options used to configure the repository, including tenant ID and correlation ID.</param>
+    /// <returns>The result contains an instance of <see cref="IRepository{TEntity}"/> for the specified entity type, configured with the provided options.</returns>
+    private IRepository<TEntity> BaseGetRepository<TEntity>(IRepositoryOptions options) where TEntity : class
+    {
+        if (!options.TenantId.IsNullOrEmptyOrWhiteSpace())
+            context.SetTenantId(options.TenantId);
+
+        if (!options.CorrelationId.IsNullOrEmptyOrWhiteSpace())
+            context.SetCorrelationId(options.CorrelationId);
+
+        return new Repository<TEntity>(context);
     }
 
     /// <summary>
