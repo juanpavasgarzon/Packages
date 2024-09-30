@@ -219,6 +219,16 @@ public Task<EntityEntry<TEntity>> UpdateAsync(TEntity entry, CancellationToken t
 public Task<EntityEntry<TEntity>> RemoveByKeyAsync<TKey>(TKey key, CancellationToken token = new())
 public Task<EntityEntry<TEntity>> RemoveAsync(TEntity entry, CancellationToken token = new());
 public Task RemoveManyAsync(IEnumerable<TEntity> entries, CancellationToken token = new());
+public TEntity? GetByKey<TKey>(TKey key) where TKey : notnull;
+public TEntity? GetOne(Expression<Func<TEntity, bool>> filter);
+public IEnumerable<TEntity> GetAll();
+public IQueryable<TEntity> GetQuery();
+public EntityEntry<TEntity> Add(TEntity entry);
+public void AddMany(IEnumerable<TEntity> entries);
+public EntityEntry<TEntity> Update(TEntity entry);
+public EntityEntry<TEntity> RemoveByKey<TKey>(TKey key) where TKey : notnull;
+public EntityEntry<TEntity> Remove(TEntity entry);
+public void RemoveMany(IEnumerable<TEntity> entries);
 ```
 
 #### Unit of work methods
