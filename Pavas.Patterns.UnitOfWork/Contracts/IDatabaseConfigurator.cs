@@ -5,7 +5,7 @@ namespace Pavas.Patterns.UnitOfWork.Contracts;
 /// <summary>
 /// Defines a configurator interface for configuring the UnitOfWork and DbContext within a dependency injection container.
 /// </summary>
-public interface IUnitOfWorkConfigurator
+public interface IDatabaseConfigurator
 {
     /// <summary>
     /// Configures the database options and other necessary services using the provided service provider.

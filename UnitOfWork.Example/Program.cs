@@ -32,7 +32,7 @@ builder.Services.AddTenantContext([
     }
 ]);
 
-builder.Services.AddUnitOfWork<UnitOfWorkContext, UnitOfWorkConfigurator>(ServiceLifetime.Singleton);
+builder.Services.AddUnitOfWork<UnitOfWorkContext, DatabaseConfigurator>(ServiceLifetime.Singleton);
 
 builder.Services.AddHostedService<HostedService>();
 

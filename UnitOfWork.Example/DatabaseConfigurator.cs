@@ -1,17 +1,15 @@
 using Pavas.Patterns.UnitOfWork.Contracts;
 using Pavas.Patterns.UnitOfWork.Contracts.Options;
-using Pavas.Runtime.TenantContext;
 
 namespace UnitOfWork.Example;
 
-public class UnitOfWorkConfigurator : IUnitOfWorkConfigurator
+public class DatabaseConfigurator : IDatabaseConfigurator
 {
     public IDatabaseOptions Configure(IServiceProvider serviceProvider, IDatabaseOptions databaseOptions)
     {
-        var tenantContext = serviceProvider.GetRequiredService<List<Tenant>>();
-
-        databaseOptions.ConnectionString = tenantContext[0].Connection;
-        databaseOptions.TenantId = tenantContext[0].Id;
+        databaseOptions.ConnectionString = "Host=localhost;Database=MyDatabase;Username=root;Password=root";
+        databaseOptions.TenantId = "Default";
+        databaseOptions.CorrelationId = Guid.NewGuid().ToString();
         databaseOptions.EnsureCreated = true;
         return databaseOptions;
     }

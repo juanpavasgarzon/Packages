@@ -19,13 +19,13 @@ public static class Extensions
     /// </summary>
     /// <typeparam name="TContext">The type of the database context to register.</typeparam>
     /// <typeparam name="TConfigurator">
-    /// The type of the configurator that implements <see cref="IUnitOfWorkConfigurator"/> to provide the configuration logic.
+    /// The type of the configurator that implements <see cref="IDatabaseConfigurator"/> to provide the configuration logic.
     /// </typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to which the UnitOfWork and DbContext will be added.</param>
     /// <param name="serviceLifetime">The lifetime (Scoped, Singleton, Transient) for the UnitOfWork and DbContext services.</param>
     public static void AddUnitOfWork<TContext, TConfigurator>(this IServiceCollection services,
         ServiceLifetime serviceLifetime) where TContext : DatabaseContext
-        where TConfigurator : class, IUnitOfWorkConfigurator, new()
+        where TConfigurator : class, IDatabaseConfigurator, new()
     {
         services.AddDbContext<DatabaseContext, TContext>((provider, builder) =>
         {
