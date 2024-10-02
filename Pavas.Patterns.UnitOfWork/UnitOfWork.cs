@@ -134,4 +134,18 @@ internal class UnitOfWork(DatabaseContext context, IServiceProvider provider) : 
     {
         return context.SaveChanges();
     }
+
+    /// <summary>
+    /// Retrieves the current instance of the <see cref="DatabaseContext"/>.
+    /// </summary>
+    /// <returns>The current instance of <see cref="DatabaseContext"/> being used.</returns>
+    /// <remarks>
+    /// This method provides access to the underlying database context, allowing operations such as querying, 
+    /// attaching entities, or other direct interactions with the Entity Framework context. Use this method with caution 
+    /// to avoid bypassing any unit of work patterns or repository abstractions that manage context lifecycle and transaction handling.
+    /// </remarks>
+    public DatabaseContext GetContext()
+    {
+        return context;
+    }
 }

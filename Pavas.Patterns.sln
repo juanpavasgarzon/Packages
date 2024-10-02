@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.UnitOfWork",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitOfWork.Example", "UnitOfWork.Example\UnitOfWork.Example.csproj", "{ACD101EC-7C0C-4986-8229-770955B64D94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pavas.Patterns.MinimalApi", "Pavas.Patterns.MinimalApi\Pavas.Patterns.MinimalApi.csproj", "{AE4645C4-FB29-421B-ACE5-ABF03007A5EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{ACD101EC-7C0C-4986-8229-770955B64D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACD101EC-7C0C-4986-8229-770955B64D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACD101EC-7C0C-4986-8229-770955B64D94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4645C4-FB29-421B-ACE5-ABF03007A5EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4645C4-FB29-421B-ACE5-ABF03007A5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4645C4-FB29-421B-ACE5-ABF03007A5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4645C4-FB29-421B-ACE5-ABF03007A5EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A55ABACB-0EAC-418F-A618-E29CD78FAE0F} = {ADCDC922-6EF0-4456-9FCD-5532E9E4D8F0}

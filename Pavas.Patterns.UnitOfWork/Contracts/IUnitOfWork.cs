@@ -77,4 +77,15 @@ public interface IUnitOfWork
     /// </summary>
     /// <returns>The result contains the number of state entries written to the database.</returns>
     public int SaveChanges();
+
+    /// <summary>
+    /// Retrieves the current instance of the <see cref="DatabaseContext"/>.
+    /// </summary>
+    /// <returns>The current instance of <see cref="DatabaseContext"/> being used.</returns>
+    /// <remarks>
+    /// This method provides access to the underlying database context, allowing operations such as querying, 
+    /// attaching entities, or other direct interactions with the Entity Framework context. Use this method with caution 
+    /// to avoid bypassing any unit of work patterns or repository abstractions that manage context lifecycle and transaction handling.
+    /// </remarks>
+    public DatabaseContext GetContext();
 }
